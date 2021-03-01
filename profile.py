@@ -1,4 +1,3 @@
-#!/usr/local/python3
 
 # Import the Portal object.
 import geni.portal as portal
