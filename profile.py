@@ -8,7 +8,7 @@ import geni.rspec.pg as rspec
 request = portal.context.makeRequestRSpec()
 
 # Add a raw PC to the request
-node = request.RawPC("Open_OnDemand")
+node = request.RawPC("node")
 
 # Request an image for this node
 node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
