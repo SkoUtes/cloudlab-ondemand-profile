@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo yum update -y
-touch /home/test
+touch /home/SkoUtes/test
 sudo yum install -y epel-release
 sudo yum install -y centos-release-scl subscription manager
 sudo yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
