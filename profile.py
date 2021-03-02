@@ -1,3 +1,10 @@
+"""An example of constructing a profile with install and execute services. 
+
+Instructions:
+Wait for the profile instance to start, then click on the node in the topology
+and choose the `shell` menu item. The install and execute services are handled
+automatically during profile instantiation, with no manual intervention required.
+"""
 
 # Import the Portal object.
 import geni.portal as portal
@@ -14,8 +21,8 @@ node = request.RawPC("node")
 node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
 # Install and execute startup scripts
-node.addService(rspec.Execute(shell="bash", command="chmod +x /local/repository/install.sh"))
-node.addService(rspec.Execute(shell="bash", command="/local/repository/install.sh"))
+node.addService(rspec.Execute(shell="sh", command="chmod +x /local/repository/install.sh"))
+node.addService(rspec.Execute(shell="sh", command="/local/repository/install.sh"))
 
 portal.context.printRequestRSpec()
 
