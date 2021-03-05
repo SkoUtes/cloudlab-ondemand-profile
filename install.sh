@@ -64,9 +64,9 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   CustomLog "logs/keycloak_access_ssl.log" combined
 
   SSLEngine On
-  SSLCertificateFile "/etc/pki/tls/certs/webdev07.hpc.osc.edu.crt"
-  SSLCertificateKeyFile "/etc/pki/tls/private/webdev07.hpc.osc.edu.key"
-  SSLCertificateChainFile "/etc/pki/tls/certs/webdev07.hpc.osc.edu-interm.crt"
+  SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"
+  SSLCertificateKeyFile "/etc/pki/tls/private/$hostname.key"
+  SSLCertificateChainFile "/etc/pki/tls/certs/$hostname-interm.crt"
 
   # Proxy rules
   ProxyRequests Off
