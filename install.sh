@@ -51,8 +51,8 @@ TimeoutStopSec=600
 WantedBy=multi-user.target
 EOF
 #Start up keycloak
-systemctl daemon-reload
-systemctl start keycloak
+sudo systemctl daemon-reload
+sudo systemctl start keycloak
 sleep 5
 #Enable proxying to keycloak
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
