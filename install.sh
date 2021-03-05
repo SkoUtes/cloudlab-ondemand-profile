@@ -9,8 +9,7 @@ sleep 10
 yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
 sleep 10 
 yum-config-manager --enable rhel-server-rhscl-7-rpms
-yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 \
-ondemand-senlinux httpd-mod_auth_openidc
+yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
 # Configure shell application
 mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
