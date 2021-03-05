@@ -1,6 +1,5 @@
 #!/bin/bash
 
-script /local/install_log.txt
 export hostname=$(hostname)
 #Install Open OnDemand components
 yum update -y 
@@ -80,4 +79,3 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   RequestHeader set X-Forwarded-Port "443"
 </VirtualHost>
 EOF
-exit
