@@ -13,10 +13,9 @@ yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 \
 ondemand-senlinux httpd-mod_auth_openidc
 sleep 5
 # Configure shell application
-mkdir /etc/ood/config/clusters.d /opt/ood/linuxhost_adapter \
-/etc/ood/config/apps etc/ood/config/apps/shell
+mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
 # Configure desktop application
-mkdir /etc/ood/config/apps/bc_desktop /etc/ood/config/apps/bc_desktop/single_cluster
+mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
 # Install Keycloak components
 cd /opt
 wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && tar xzf keycloak-9.0.0.tar.gz && \
