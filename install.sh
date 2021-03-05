@@ -1,5 +1,7 @@
 #!/bin/bash
 
+script /local/install_log.txt
+export hostname=$(hostname)
 #Install Open OnDemand components
 yum update -y 
 sleep 10
@@ -23,7 +25,7 @@ groupadd -r keycloak && useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g k
 chown keycloak: -R keycloak-9.0.0
 cd /opt/keycloak-9.0.0 
 sudo -u keycloak chmod 0700 standalone
-yum install java-1.8.0-openjdk-devel
+yum install -y java-1.8.0-openjdk-devel
 #Generate admin user
 export KC_PASSWORD=$(opensssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
@@ -54,27 +56,28 @@ systemctl daemon-reload
 systemctl start keycloak
 sleep 5
 #Enable proxying to keycloak
-#cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
-#<VirtualHost *:443>
-#  ServerName ondemand-idpdev.hpc.osc.edu
-#
-#  ErrorLog  "logs/keycloak_error_ssl.log"
-#  CustomLog "logs/keycloak_access_ssl.log" combined
-#
-#  SSLEngine On
-#  SSLCertificateFile "/etc/pki/tls/certs/webdev07.hpc.osc.edu.crt"
-#  SSLCertificateKeyFile "/etc/pki/tls/private/webdev07.hpc.osc.edu.key"
-#  SSLCertificateChainFile "/etc/pki/tls/certs/webdev07.hpc.osc.edu-interm.crt"
-#
-#  # Proxy rules
-#  ProxyRequests Off
-#  ProxyPreserveHost On
-#  ProxyPass / http://localhost:8080/
-#  ProxyPassReverse / http://localhost:8080/
-#
-#  ## Request header rules
-#  ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
-#  RequestHeader set X-Forwarded-Proto "https"
-#  RequestHeader set X-Forwarded-Port "443"
-#</VirtualHost>
-#EOF
+cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
+<VirtualHost *:443>
+  ServerName $hostname
+
+  ErrorLog  "logs/keycloak_error_ssl.log"
+  CustomLog "logs/keycloak_access_ssl.log" combined
+
+  SSLEngine On
+  SSLCertificateFile "/etc/pki/tls/certs/webdev07.hpc.osc.edu.crt"
+  SSLCertificateKeyFile "/etc/pki/tls/private/webdev07.hpc.osc.edu.key"
+  SSLCertificateChainFile "/etc/pki/tls/certs/webdev07.hpc.osc.edu-interm.crt"
+
+  # Proxy rules
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyPass / http://localhost:8080/
+  ProxyPassReverse / http://localhost:8080/
+
+  ## Request header rules
+  ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
+  RequestHeader set X-Forwarded-Proto "https"
+  RequestHeader set X-Forwarded-Port "443"
+</VirtualHost>
+EOF
+exit
