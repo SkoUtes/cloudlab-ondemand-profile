@@ -2,32 +2,33 @@
 
 export hostname=$(hostname)
 #Install Open OnDemand components
-yum update -y 
 sleep 10
-yum install -y epel-release centos-release-scl subscription-manager snapd
+sudo yum update -y 
 sleep 10
-yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
+sudo yum install -y epel-release centos-release-scl subscription-manager snapd
+sleep 10
+sudo yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
 sleep 10 
-yum-config-manager --enable rhel-server-rhscl-7-rpms
-yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
+sudo yum-config-manager --enable rhel-server-rhscl-7-rpms
+sudo yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
-snap install core; snap refresh core
-snap install --classic certbot
-ln -s /snap/bin/certbot /usr/bin/certbot
+sudo snap install core; snap refresh core
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
 # Configure shell application
-mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
+sudo mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
 # Configure desktop application
-mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
+sudo mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
 # Install Keycloak components
 cd /opt
-wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && tar xzf keycloak-9.0.0.tar.gz && \
-groupadd -r keycloak && useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g keycloak keycloak && \
-chown keycloak: -R keycloak-9.0.0
+sudo wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && tar xzf keycloak-9.0.0.tar.gz && \
+sudo groupadd -r keycloak && useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g keycloak keycloak && \
+sudo chown keycloak: -R keycloak-9.0.0
 cd /opt/keycloak-9.0.0 
 sudo -u keycloak chmod 0700 standalone
-yum install -y java-1.8.0-openjdk-devel
+sudo yum install -y java-1.8.0-openjdk-devel
 #Generate admin user
-export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
+sudo export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
 #Enable proxying to keycloak
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true)'
@@ -59,7 +60,7 @@ sleep 5
 #certbot certonly --apache
 
 #Enable proxying to keycloak
-cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
+sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 <VirtualHost *:443>
   ServerName $hostname
 
@@ -84,7 +85,7 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 </VirtualHost>
 EOF
 #Configure ood_portal.yml file
-cat > /etc/ood/config/ood_portal.yml <<EOF
+sudo cat > /etc/ood/config/ood_portal.yml <<EOF
 # /etc/ood/config/ood_portal.yml
 ---
 # List of Apache authentication directives
