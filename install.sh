@@ -4,13 +4,16 @@ export hostname=$(hostname)
 #Install Open OnDemand components
 yum update -y 
 sleep 10
-yum install -y epel-release centos-release-scl subscription-manager
+yum install -y epel-release centos-release-scl subscription-manager snapd
 sleep 10
 yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
 sleep 10 
 yum-config-manager --enable rhel-server-rhscl-7-rpms
 yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
+snap install core; snap refresh core
+snap install --classic certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
 # Configure shell application
 mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
 # Configure desktop application
@@ -52,6 +55,9 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl start keycloak
 sleep 5
+#cd /etc/pki/tls/certs
+#certbot certonly --apache
+
 #Enable proxying to keycloak
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 <VirtualHost *:443>
@@ -76,4 +82,35 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   RequestHeader set X-Forwarded-Proto "https"
   RequestHeader set X-Forwarded-Port "443"
 </VirtualHost>
+EOF
+#Configure ood_portal.yml file
+cat > /etc/ood/config/ood_portal.yml <<EOF
+# /etc/ood/config/ood_portal.yml
+---
+# List of Apache authentication directives
+# NB: Be sure the appropriate Apache module is installed for this
+# Default: (see below, uses basic auth with an htpasswd file)
+auth:
+  - 'AuthType openid-connect'
+  - 'Require valid-user'
+
+# Redirect user to the following URI when accessing logout URI
+# Example:
+#     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
+# Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
+# HTML page explaining logout to the user)
+logout_redirect: '/oidc?logout=https%3A%2F%2Fondemand-dev.hpc.osc.edu'
+
+# Sub-uri used by mod_auth_openidc for authentication
+# Example:
+#     oidc_uri: '/oidc'
+# Default: null (disable OpenID Connect support)
+oidc_uri: '/oidc'
+
+# Certificates
+servername: $hostname
+ssl:
+  - 'SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"'
+  - 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostnamekey"'
+  - 'SSLCertificateChainFile "/etc/pki/tls/certs/$hostname-interm.crt"'
 EOF
