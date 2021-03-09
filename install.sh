@@ -17,7 +17,8 @@ sleep 10
 sudo yum-config-manager --enable rhel-server-rhscl-7-rpms
 sudo yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
-sudo systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap
+sudo systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
+sudo snap install core ; sudo snap install core ; sudo snap refresh core
 sudo snap install --classic certbot ; sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 # Configure shell application
@@ -26,14 +27,14 @@ sudo mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
 sudo mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
 # Install Keycloak components
 cd /opt
-sudo wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && tar xzf keycloak-9.0.0.tar.gz && \
-sudo groupadd -r keycloak && useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g keycloak keycloak && \
+sudo wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && sudo tar xzf keycloak-9.0.0.tar.gz && \
+sudo groupadd -r keycloak && sudo useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g keycloak keycloak && \
 sudo chown keycloak: -R keycloak-9.0.0
 cd /opt/keycloak-9.0.0 
 sudo -u keycloak chmod 0700 standalone
 sudo yum install -y java-1.8.0-openjdk-devel
 #Generate admin user
-sudo export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
+export KC_PASSWORD=$(openssl rand -hex 20) && sudo echo $KC_PASSWORD >> /root/kc-password.txt
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
 #Enable proxying to keycloak
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true)'
@@ -117,12 +118,12 @@ oidc_uri: '/oidc'
 servername: $hostname
 ssl:
   - 'SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"'
-  - 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostnamekey"'
+  - 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostname.key"'
   - 'Include "/root/ssl/ssl-standard.conf'
 EOF
 #Configure apache for OnDemand
 sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
-OIDCProviderMetadataURL https://keycloak-$hostname/auth/realms/ondemand/.well-known/openid-configuration
+OIDCProviderMetadataURL https://$hostname:8080/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
 OIDCRedirectURI      https://$hostname/oidc
@@ -142,9 +143,7 @@ OIDCPassClaimsAs environment
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 EOF
 #Configure SSL for Apache
-if [ ! -f /root/ssl ]; then
-	mkdir /root/ssl
-fi
+mkdir /root/ssl
 sudo cat > /root/ssl/ssl-standard.conf <<EOF
 # ssl-standard.conf
 # Basic Apache SSL options
