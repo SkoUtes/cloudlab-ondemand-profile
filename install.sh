@@ -8,40 +8,40 @@ exec 1>log.out 2>&1
 export hostname=$(hostname)
 #Install Open OnDemand components
 sleep 10
-sudo yum update -y 
+yum update -y 
 sleep 10
-sudo yum install -y epel-release centos-release-scl subscription-manager snapd
+yum install -y epel-release centos-release-scl subscription-manager snapd
 sleep 10
-sudo yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
+yum install -y https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
 sleep 10 
-sudo yum-config-manager --enable rhel-server-rhscl-7-rpms
-sudo yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
+yum-config-manager --enable rhel-server-rhscl-7-rpms
+yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
-sudo systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
-sudo snap install core ; sudo snap install core ; sudo snap refresh core
-sudo snap install --classic certbot ; sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
+systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
+snap install core ; snap install core ; snap refresh core
+snap install --classic certbot ; snap install --classic certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
 # Configure shell application
-sudo mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
+mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
 # Configure desktop application
-sudo mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
+mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
 # Install Keycloak components
 cd /opt
-sudo wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && sudo tar xzf keycloak-9.0.0.tar.gz && \
-sudo groupadd -r keycloak && sudo useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g keycloak keycloak && \
-sudo chown keycloak: -R keycloak-9.0.0
+wget https://downloads.jboss.org/keycloak/9.0.0/keycloak-9.0.0.tar.gz && tar xzf keycloak-9.0.0.tar.gz && \
+groupadd -r keycloak && useradd -m -d /var/lib/keycloak -s /sbin/nologin -r -g keycloak keycloak && \
+chown keycloak: -R keycloak-9.0.0
 cd /opt/keycloak-9.0.0 
 sudo -u keycloak chmod 0700 standalone
-sudo yum install -y java-1.8.0-openjdk-devel
+yum install -y java-1.8.0-openjdk-devel
 #Generate admin user
-export KC_PASSWORD=$(openssl rand -hex 20) && sudo echo $KC_PASSWORD >> /root/kc-password.txt
+export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
 #Enable proxying to keycloak
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/socket-binding-group=standard-sockets/socket-binding=proxy-https:add(port=443)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=redirect-socket,value=proxy-https)'
 #Create keycloak service
-sudo cat > /etc/systemd/system/keycloak.service <<EOF
+cat > /etc/systemd/system/keycloak.service <<EOF
 
 [Unit]
 Description=Jboss Application Server
@@ -59,14 +59,14 @@ TimeoutStopSec=600
 WantedBy=multi-user.target
 EOF
 #Start up keycloak
-sudo systemctl daemon-reload
-sudo systemctl start keycloak
+systemctl daemon-reload
+systemctl start keycloak
 sleep 5
 #cd /etc/pki/tls/certs
 #certbot certonly --apache
 
 #Enable proxying to keycloak
-sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
+cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 <VirtualHost *:443>
   ServerName keycloak-$hostname
 
@@ -91,7 +91,7 @@ sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 </VirtualHost>
 EOF
 #Configure ood_portal.yml file
-sudo cat > /etc/ood/config/ood_portal.yml <<EOF
+cat > /etc/ood/config/ood_portal.yml <<EOF
 # /etc/ood/config/ood_portal.yml
 ---
 # List of Apache authentication directives
@@ -122,7 +122,7 @@ ssl:
   - 'Include "/root/ssl/ssl-standard.conf'
 EOF
 #Configure apache for OnDemand
-sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
+cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 OIDCProviderMetadataURL https://$hostname:8080/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
@@ -144,7 +144,7 @@ OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_au
 EOF
 #Configure SSL for Apache
 mkdir /root/ssl
-sudo cat > /root/ssl/ssl-standard.conf <<EOF
+cat > /root/ssl/ssl-standard.conf <<EOF
 # ssl-standard.conf
 # Basic Apache SSL options
 # 2015-10-15
@@ -161,8 +161,8 @@ SSLCipherSuite EECDH:ECDH:-RC4:-3DES
 </Files>
 EOF
 #Startup Apache
-sudo /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
+/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 #Change permissions and rebuild the portal
-sudo chgrp apache /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
-sudo chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
-sudo /opt/ood/ood-portal-generator/sbin/update_ood_portal
+chgrp apache /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
+chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
+/opt/ood/ood-portal-generator/sbin/update_ood_portal
