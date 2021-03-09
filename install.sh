@@ -113,10 +113,10 @@ servername: $hostname
 ssl:
   - 'SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"'
   - 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostnamekey"'
-  - 'SSLCertificateChainFile "/etc/pki/tls/certs/$hostname-interm.crt"'
+  - 'Include "/root/ssl/ssl-standard.conf'
 EOF
 #Configure apache for OnDemand
-cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
+sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 OIDCProviderMetadataURL https://keycloak-$hostname/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
@@ -136,3 +136,29 @@ OIDCPassClaimsAs environment
 # Strip out session cookies before passing to backend
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 EOF
+#Configure SSL for Apache
+if [ ! -f /root/ssl ]; then
+	mkdir /root/ssl
+fi
+sudo cat > /root/ssl/ssl-standard.conf <<EOF
+# ssl-standard.conf
+# Basic Apache SSL options
+# 2015-10-15
+SSLEngine on
+#   SSL Cipher Suite:
+#   List the ciphers that the client is permitted to negotiate.
+#   See the mod_ssl documentation for a complete list.
+SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLHonorCipherOrder on
+SSLCipherSuite EECDH:ECDH:-RC4:-3DES
+#   Export the SSL environment variables to scripts
+<Files ~ "\.(cgi|pl|shtml|phtml|php3?)$">
+   SSLOptions +StdEnvVars
+</Files>
+EOF
+#Startup Apache
+sudo /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
+#Change permissions and rebuild the portal
+sudo chgrp apache /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
+sudo chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
+sudo /opt/ood/ood-portal-generator/sbin/update_ood_portal
