@@ -12,8 +12,8 @@ sleep 10
 sudo yum-config-manager --enable rhel-server-rhscl-7-rpms
 sudo yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
-sudo snap install core; snap refresh core
-sudo snap install --classic certbot
+sudo systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap
+sudo snap install --classic certbot ; sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 # Configure shell application
 sudo mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
@@ -62,7 +62,7 @@ sleep 5
 #Enable proxying to keycloak
 sudo cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 <VirtualHost *:443>
-  ServerName $hostname
+  ServerName keycloak-$hostname
 
   ErrorLog  "logs/keycloak_error_ssl.log"
   CustomLog "logs/keycloak_access_ssl.log" combined
@@ -100,7 +100,7 @@ auth:
 #     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
 # Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
 # HTML page explaining logout to the user)
-logout_redirect: '/oidc?logout=https%3A%2F%2Fondemand-dev.hpc.osc.edu'
+logout_redirect: '/oidc?logout=https%3A%2F%2F$hostname'
 
 # Sub-uri used by mod_auth_openidc for authentication
 # Example:
@@ -114,4 +114,25 @@ ssl:
   - 'SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"'
   - 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostnamekey"'
   - 'SSLCertificateChainFile "/etc/pki/tls/certs/$hostname-interm.crt"'
+EOF
+#Configure apache for OnDemand
+cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
+OIDCProviderMetadataURL https://keycloak-$hostname/auth/realms/ondemand/.well-known/openid-configuration
+OIDCClientID        "ondemand_client"
+OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
+OIDCRedirectURI      https://$hostname/oidc
+OIDCCryptoPassphrase "4444444444444444444444444444444444444444"
+
+# Keep sessions alive for 8 hours
+OIDCSessionInactivityTimeout 28800
+OIDCSessionMaxDuration 28800
+
+# Set REMOTE_USER
+OIDCRemoteUserClaim preferred_username
+
+# Don't pass claims to backend servers
+OIDCPassClaimsAs environment
+
+# Strip out session cookies before passing to backend
+OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 EOF
