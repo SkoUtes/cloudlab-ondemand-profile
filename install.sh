@@ -60,21 +60,25 @@ EOF
 systemctl daemon-reload
 systemctl start keycloak
 sleep 5
-#cd /etc/pki/tls/certs
-#certbot certonly --apache
+#Generate self-signed certificates
+cd /etc/pki/tls/certs
+openssl  req -x509 -newkey rsa:4096 -nodes \
+-keyout ondemand.key -out ondemand.crt \
+-subj "/C=US/ST=Utah/L='Salt Lake City'/O='University of Utah CHPC'/CN=chpc.utah.edu"
+mv ondemand.key /etc/pki/tls/private
 
 #Enable proxying to keycloak
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 <VirtualHost *:443>
-  ServerName keycloak-$hostname
+  ServerName $hostname
 
   ErrorLog  "logs/keycloak_error_ssl.log"
   CustomLog "logs/keycloak_access_ssl.log" combined
 
   SSLEngine On
-  SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"
-  SSLCertificateKeyFile "/etc/pki/tls/private/$hostname.key"
-  SSLCertificateChainFile "/etc/pki/tls/certs/$hostname-interm.crt"
+  SSLCertificateFile "/etc/pki/tls/certs/ondemand.crt"
+  SSLCertificateKeyFile "/etc/pki/tls/private/ondemand.key"
+  SSLCertificateChainFile "/etc/pki/tls/certs/ondemand-interm.crt"
 
   # Proxy rules
   ProxyRequests Off
