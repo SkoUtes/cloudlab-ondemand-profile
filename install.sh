@@ -78,7 +78,8 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   SSLEngine On
   SSLCertificateFile "/etc/pki/tls/certs/ondemand.crt"
   SSLCertificateKeyFile "/etc/pki/tls/private/ondemand.key"
-  SSLCertificateChainFile "/etc/pki/tls/certs/ondemand-interm.crt"
+  Include "/root/ssl/ssl-standard.conf"
+#  SSLCertificateChainFile "/etc/pki/tls/certs/ondemand-interm.crt"
 
   # Proxy rules
   ProxyRequests Off
@@ -121,7 +122,7 @@ servername: $hostname
 ssl:
   - 'SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"'
   - 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostname.key"'
-  - 'Include "/root/ssl/ssl-standard.conf'
+  - 'Include "/root/ssl/ssl-standard.conf"'
 EOF
 #Configure apache for OnDemand
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
