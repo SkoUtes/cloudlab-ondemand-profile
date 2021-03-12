@@ -56,17 +56,19 @@ TimeoutStopSec=600
 [Install]
 WantedBy=multi-user.target
 EOF
-##Start up keycloak
-#systemctl daemon-reload
+##Start up keycloak and ondemand-apache
+systemctl daemon-reload
 systemctl start keycloak
+systemctl start httpd24-httpd
 sleep 5
-##Generate self-signed certificates
-#cd /etc/pki/tls/certs
-#openssl  req -x509 -newkey rsa:4096 -nodes \
-#-keyout ondemand.key -out ondemand.crt \
-#-subj "/C=US/ST=Utah/L='Salt Lake City'/O='University of Utah CHPC'/CN=chpc.utah.edu"
-#mv ondemand.key /etc/pki/tls/private
-
+# Create apachectl script wrapper
+echo -e '#!/bin/bash\nscl enable httpd24 -- /opt/rh/httpd24/root/usr/sbin/apachectl $@' > /opt/apachectl-wrapper.sh
+chmod 0750 /opt/apachectl-wrapper.sh
+# Get letsencrypt certs using certbot
+certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
+--apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
+--apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
+--apache-ctl /opt/apachectl-wrapper.sh
 #Enable proxying to keycloak
 #cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 #<VirtualHost *:443>
