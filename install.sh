@@ -69,6 +69,7 @@ certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
 --apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
 --apache-ctl /opt/apachectl-wrapper.sh
 # Enable proxying to keycloak
+iptables -I INPUT -p tcp -m multiport --dports 8443 -m comment --comment "08443 *:8443" -j ACCEPT
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 Listen 8443
 <VirtualHost *:8443>
