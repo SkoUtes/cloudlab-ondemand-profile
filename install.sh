@@ -39,27 +39,27 @@ sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=def
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/socket-binding-group=standard-sockets/socket-binding=proxy-https:add(port=443)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=redirect-socket,value=proxy-https)'
 #Create keycloak service
-#cat > /etc/systemd/system/keycloak.service <<EOF
-#
-#[Unit]
-#Description=Jboss Application Server
-#After=network.target
-#
-#[Service]
-#Type=idle
-#User=keycloak
-#Group=keycloak
-#ExecStart=/opt/keycloak-9.0.0/bin/standalone.sh -b 0.0.0.0
-#TimeoutStartSec=600
-#TimeoutStopSec=600
-#
-#[Install]
-#WantedBy=multi-user.target
-#EOF
+cat > /etc/systemd/system/keycloak.service <<EOF
+
+[Unit]
+Description=Jboss Application Server
+After=network.target
+
+[Service]
+Type=idle
+User=keycloak
+Group=keycloak
+ExecStart=/opt/keycloak-9.0.0/bin/standalone.sh -b 0.0.0.0
+TimeoutStartSec=600
+TimeoutStopSec=600
+
+[Install]
+WantedBy=multi-user.target
+EOF
 ##Start up keycloak
 #systemctl daemon-reload
-#systemctl start keycloak
-#sleep 5
+systemctl start keycloak
+sleep 5
 ##Generate self-signed certificates
 #cd /etc/pki/tls/certs
 #openssl  req -x509 -newkey rsa:4096 -nodes \
