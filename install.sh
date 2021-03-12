@@ -36,7 +36,6 @@ export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-pass
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
 # Enable proxying to keycloak
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true)'
-sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/socket-binding-group=standard-sockets/socket-binding=proxy-https:add(port=443)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/socket-binding-group=standard-sockets/socket-binding=proxy-https:add(port=8443)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=redirect-socket,value=proxy-https)'
 # Create keycloak service
@@ -71,7 +70,8 @@ certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
 --apache-ctl /opt/apachectl-wrapper.sh
 # Enable proxying to keycloak
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
-<VirtualHost *:443>
+Listen 8443
+<VirtualHost *:8443>
   ServerName $hostname
 
   ErrorLog  "logs/keycloak_error_ssl.log"
@@ -91,7 +91,7 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   ## Request header rules
   ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
   RequestHeader set X-Forwarded-Proto "https"
-  RequestHeader set X-Forwarded-Port "443"
+  RequestHeader set X-Forwarded-Port "8443"
 </VirtualHost>
 EOF
 # Configure ood_portal.yml file
