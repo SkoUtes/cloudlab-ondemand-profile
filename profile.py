@@ -21,7 +21,7 @@ node = request.RawPC("node")
 node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
 # Install and execute startup scripts
-node.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/install.sh | tee /local/logs/install.log"))
+node.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/install.sh"))
 
 portal.context.printRequestRSpec()
 

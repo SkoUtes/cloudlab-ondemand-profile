@@ -80,7 +80,6 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"
   SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"
   SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"
-  Include "/root/ssl/ssl-standard.conf"
 
   # Proxy rules
   ProxyRequests Off
@@ -105,6 +104,12 @@ auth:
   - 'AuthType openid-connect'
   - 'Require valid-user'
 
+# The server name used for name-based Virtual Host
+# Example:
+#     servername: 'www.example.com'
+# Default: null (don't use name-based Virtual Host)
+servername: $hostname
+
 # Redirect user to the following URI when accessing logout URI
 # Example:
 #     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
@@ -124,7 +129,6 @@ ssl:
   - 'SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"'
   - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"'
   - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"'
-  - 'Include "/root/ssl/ssl-standard.conf"'
 EOF
 /opt/ood/ood-portal-generator/sbin/update_ood_portal
 systemctl start httpd24-httpd
