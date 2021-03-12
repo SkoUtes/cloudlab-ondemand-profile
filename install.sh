@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#Create logfile
+# Create logfile
 exec > /local/install.log 2>&1
 
 export hostname=$(hostname)
-#Install Open OnDemand components
+# Install Open OnDemand components
 sleep 10
 yum update -y 
 sleep 10
@@ -31,14 +31,14 @@ chown keycloak: -R keycloak-9.0.0
 cd /opt/keycloak-9.0.0 
 sudo -u keycloak chmod 0700 standalone
 yum install -y java-1.8.0-openjdk-devel
-#Generate admin user
+# Generate admin user
 export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
-#Enable proxying to keycloak
+# Enable proxying to keycloak
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/socket-binding-group=standard-sockets/socket-binding=proxy-https:add(port=443)'
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=redirect-socket,value=proxy-https)'
-#Create keycloak service
+# Create keycloak service
 cat > /etc/systemd/system/keycloak.service <<EOF
 
 [Unit]
@@ -56,7 +56,7 @@ TimeoutStopSec=600
 [Install]
 WantedBy=multi-user.target
 EOF
-##Start up keycloak and ondemand-apache
+# Start up keycloak and ondemand-apache
 systemctl daemon-reload
 systemctl start keycloak
 sleep 5
@@ -68,7 +68,7 @@ certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
 --apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
 --apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
 --apache-ctl /opt/apachectl-wrapper.sh
-#Enable proxying to keycloak
+# Enable proxying to keycloak
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 <VirtualHost *:443>
   ServerName $hostname
@@ -94,7 +94,7 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
   RequestHeader set X-Forwarded-Port "443"
 </VirtualHost>
 EOF
-##Configure ood_portal.yml file
+# Configure ood_portal.yml file
 cat > /etc/ood/config/ood_portal.yml <<EOF
 # /etc/ood/config/ood_portal.yml
 ---
@@ -128,7 +128,7 @@ ssl:
 EOF
 /opt/ood/ood-portal-generator/sbin/update_ood_portal
 systemctl start httpd24-httpd
-##Configure apache for OnDemand
+# Configure apache for OnDemand
 #cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 #OIDCProviderMetadataURL https://$hostname:8443/auth/realms/ondemand/.well-known/openid-configuration
 #OIDCClientID        "ondemand_client"
