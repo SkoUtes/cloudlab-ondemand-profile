@@ -59,7 +59,6 @@ EOF
 ##Start up keycloak and ondemand-apache
 systemctl daemon-reload
 systemctl start keycloak
-systemctl start httpd24-httpd
 sleep 5
 # Create apachectl script wrapper
 echo -e '#!/bin/bash\nscl enable httpd24 -- /opt/rh/httpd24/root/usr/sbin/apachectl $@' > /opt/apachectl-wrapper.sh
@@ -70,62 +69,65 @@ certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
 --apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
 --apache-ctl /opt/apachectl-wrapper.sh
 #Enable proxying to keycloak
-#cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
-#<VirtualHost *:443>
-  #ServerName $hostname
-#
-  #ErrorLog  "logs/keycloak_error_ssl.log"
-  #CustomLog "logs/keycloak_access_ssl.log" combined
-#
-  #SSLEngine On
-  #SSLCertificateFile "/etc/pki/tls/certs/ondemand.crt"
-  #SSLCertificateKeyFile "/etc/pki/tls/private/ondemand.key"
-  #Include "/root/ssl/ssl-standard.conf"
-##  SSLCertificateChainFile "/etc/pki/tls/certs/ondemand-interm.crt"
-#
-  ## Proxy rules
-  #ProxyRequests Off
-  #ProxyPreserveHost On
-  #ProxyPass / http://localhost:8080/
-  #ProxyPassReverse / http://localhost:8080/
-#
-  ### Request header rules
-  ### as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
-  #RequestHeader set X-Forwarded-Proto "https"
-  #RequestHeader set X-Forwarded-Port "443"
-#</VirtualHost>
-#EOF
+cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
+<VirtualHost *:443>
+  ServerName $hostname
+
+  ErrorLog  "logs/keycloak_error_ssl.log"
+  CustomLog "logs/keycloak_access_ssl.log" combined
+
+  SSLEngine On
+  SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"
+  SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"
+  SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"
+  Include "/root/ssl/ssl-standard.conf"
+
+  # Proxy rules
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyPass / http://localhost:8080/
+  ProxyPassReverse / http://localhost:8080/
+
+  ## Request header rules
+  ## as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
+  RequestHeader set X-Forwarded-Proto "https"
+  RequestHeader set X-Forwarded-Port "443"
+</VirtualHost>
+EOF
 ##Configure ood_portal.yml file
-#cat > /etc/ood/config/ood_portal.yml <<EOF
-## /etc/ood/config/ood_portal.yml
-#---
-## List of Apache authentication directives
-## NB: Be sure the appropriate Apache module is installed for this
-## Default: (see below, uses basic auth with an htpasswd file)
-#auth:
-  #- 'AuthType openid-connect'
-  #- 'Require valid-user'
-#
-## Redirect user to the following URI when accessing logout URI
-## Example:
-##     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
-## Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
-## HTML page explaining logout to the user)
-#logout_redirect: '/oidc?logout=https%3A%2F%2F$hostname'
-#
-## Sub-uri used by mod_auth_openidc for authentication
-## Example:
-##     oidc_uri: '/oidc'
-## Default: null (disable OpenID Connect support)
-#oidc_uri: '/oidc'
-#
-## Certificates
-#servername: $hostname
-#ssl:
-  #- 'SSLCertificateFile "/etc/pki/tls/certs/$hostname.crt"'
-  #- 'SSLCertificateKeyFile "/etc/pki/tls/private/$hostname.key"'
-  #- 'Include "/root/ssl/ssl-standard.conf"'
-#EOF
+cat > /etc/ood/config/ood_portal.yml <<EOF
+# /etc/ood/config/ood_portal.yml
+---
+# List of Apache authentication directives
+# NB: Be sure the appropriate Apache module is installed for this
+# Default: (see below, uses basic auth with an htpasswd file)
+auth:
+  - 'AuthType openid-connect'
+  - 'Require valid-user'
+
+# Redirect user to the following URI when accessing logout URI
+# Example:
+#     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
+# Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
+# HTML page explaining logout to the user)
+logout_redirect: '/oidc?logout=https%3A%2F%2F$hostname'
+
+# Sub-uri used by mod_auth_openidc for authentication
+# Example:
+#     oidc_uri: '/oidc'
+# Default: null (disable OpenID Connect support)
+oidc_uri: '/oidc'
+
+# Certificates
+servername: $hostname
+ssl:
+  - 'SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"'
+  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"'
+  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"'
+  - 'Include "/root/ssl/ssl-standard.conf"'
+EOF
+/opt/ood/ood-portal-generator/sbin/update_ood_portal
+systemctl start httpd24-httpd
 ##Configure apache for OnDemand
 #cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 #OIDCProviderMetadataURL https://$hostname:8443/auth/realms/ondemand/.well-known/openid-configuration
