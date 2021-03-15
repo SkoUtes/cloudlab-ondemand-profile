@@ -68,6 +68,24 @@ certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
 --apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
 --apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
 --apache-ctl /opt/apachectl-wrapper.sh
+sleep 10
+# Configure SSL
+cat > /root/ssl/ssl-standard.conf <<EOF
+# ssl-standard.conf
+# Basic Apache SSL options
+# 2015-10-15
+SSLEngine on
+#   SSL Cipher Suite:
+#   List the ciphers that the client is permitted to negotiate.
+#   See the mod_ssl documentation for a complete list.
+SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLHonorCipherOrder on
+SSLCipherSuite EECDH:ECDH:-RC4:-3DES
+#   Export the SSL environment variables to scripts
+<Files ~ "\.(cgi|pl|shtml|phtml|php3?)$">
+   SSLOptions +StdEnvVars
+</Files>
+EOF
 # Enable proxying to keycloak
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/ood-keycloak.conf <<EOF
 Listen 443
@@ -154,24 +172,7 @@ systemctl start httpd24-httpd
 ## Strip out session cookies before passing to backend
 #OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 #EOF
-##Configure SSL for Apache
 #mkdir /root/ssl
-#cat > /root/ssl/ssl-standard.conf <<EOF
-## ssl-standard.conf
-## Basic Apache SSL options
-## 2015-10-15
-#SSLEngine on
-##   SSL Cipher Suite:
-##   List the ciphers that the client is permitted to negotiate.
-##   See the mod_ssl documentation for a complete list.
-#SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-#SSLHonorCipherOrder on
-#SSLCipherSuite EECDH:ECDH:-RC4:-3DES
-##   Export the SSL environment variables to scripts
-#<Files ~ "\.(cgi|pl|shtml|phtml|php3?)$">
-   #SSLOptions +StdEnvVars
-#</Files>
-#EOF
 ##Startup Apache
 #/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 ##Change permissions and rebuild the portal
