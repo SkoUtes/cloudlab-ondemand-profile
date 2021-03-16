@@ -16,16 +16,19 @@ import geni.rspec.igext as ig
 # Create a request object
 request = portal.context.makeRequestRSpec()
 
-# Add a raw PC to the request
-node = request.RawPC("node")
+# Create two nodes
+node1 = request.RawPC("node1")
+node2 = request.RawPC("node2")
+
+# Set each of the two to specifically request "m400" nodes, which in CloudLab, are ARM
+node1.hardware_type = "m400"
+node2.hardware_type = "m400"
+
+# Create a link between them
+link1 = request.Link(members = [node1, node2])
 
 # Request an image for this node
 node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
-
-# Request a pool of 2 dynamic IP adresses
-r = rspec.Request()
-pool = ig.AddressPool( "poolname", 3 )
-r.addResource( pool )
 
 # Install and execute startup scripts
 node.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/install.sh"))
