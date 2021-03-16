@@ -10,6 +10,8 @@ automatically during profile instantiation, with no manual intervention required
 import geni.portal as portal
 # Import the ProtoGENI library.
 import geni.rspec.pg as rspec
+# Import igext module
+import geni.rspec.igext
 
 # Create a request object
 request = portal.context.makeRequestRSpec()
