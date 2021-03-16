@@ -23,7 +23,7 @@ node = request.RawPC("node")
 node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
 # Request a pool of 2 dynamic IP adresses
-pool = AddressPool( "poolname", 3 )
+pool = ig.AddressPool( "poolname", 3 )
 rspec.addResource( pool )
 
 # Install and execute startup scripts
