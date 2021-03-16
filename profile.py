@@ -28,10 +28,10 @@ node2.hardware_type = "m400"
 link1 = request.Link(members = [node1, node2])
 
 # Request an image for this node
-node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
+node1.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
 # Install and execute startup scripts
-node.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/install.sh"))
+node1.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/install.sh"))
 
 portal.context.printRequestRSpec()
 
