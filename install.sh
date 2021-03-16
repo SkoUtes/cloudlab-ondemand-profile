@@ -63,12 +63,22 @@ sleep 5
 # Create apachectl script wrapper
 echo -e '#!/bin/bash\nscl enable httpd24 -- /opt/rh/httpd24/root/usr/sbin/apachectl $@' > /opt/apachectl-wrapper.sh
 chmod 0750 /opt/apachectl-wrapper.sh
+############################################### Certs ##########################################################
+
 # Get letsencrypt certs using certbot
-certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
---apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
---apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
---apache-ctl /opt/apachectl-wrapper.sh
+#certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
+#--apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
+#--apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
+#--apache-ctl /opt/apachectl-wrapper.sh
+
+# Get self-signed certs using openssl
+mkdir /etc/letsencrypt/live/$hostname
+cd /etc/letsencrypt/live/$hostname
+openssl req -x509 -newkey rsa:4096 -nodes -keyout privkey.pem -out cert.pem \
+-subj "/C=US/ST=Utah/L='Salt Lake City'/O='University of Utah CHPC'/CN=www.chpc.utah.edu"
+
 sleep 10
+############################################## Config ##########################################################
 # Configure SSL
 cat > /root/ssl/ssl-standard.conf <<EOF
 # ssl-standard.conf
@@ -98,7 +108,7 @@ Listen 443
   SSLEngine On
   SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"
   SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"
-  SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"
+#  SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"
 
   # Proxy rules
   ProxyRequests Off
@@ -147,7 +157,7 @@ servername: $hostname
 ssl:
   - 'SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"'
   - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"'
-  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"'
+#  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/fullchain.pem"'
 EOF
 /opt/ood/ood-portal-generator/sbin/update_ood_portal
 systemctl start httpd24-httpd
