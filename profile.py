@@ -11,7 +11,7 @@ import geni.portal as portal
 # Import the ProtoGENI library.
 import geni.rspec.pg as rspec
 # Import igext module
-import geni.rspec.igext
+import geni.rspec.igext as ig
 
 # Create a request object
 request = portal.context.makeRequestRSpec()
