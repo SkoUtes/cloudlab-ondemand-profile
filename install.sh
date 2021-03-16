@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create logfile
-exec > /local/install.log 2>&1
+exec > /local/logs/install.log 2>&1
 
 export hostname=$(hostname)
 # Install Open OnDemand components
