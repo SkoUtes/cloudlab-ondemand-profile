@@ -66,16 +66,16 @@ chmod 0750 /opt/apachectl-wrapper.sh
 ############################################### Certs ##########################################################
 
 # Get letsencrypt certs using certbot
-#certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
-#--apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
-#--apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
-#--apache-ctl /opt/apachectl-wrapper.sh
+certbot -m u1064657@umail.utah.edu -d $hostname --agree-tos --apache \
+--apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
+--apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
+--apache-ctl /opt/apachectl-wrapper.sh
 
 # Get self-signed certs using openssl
-mkdir -p /etc/letsencrypt/live/$hostname
-cd /etc/letsencrypt/live/$hostname
-openssl req -x509 -newkey rsa:4096 -nodes -keyout privkey.pem -out cert.pem \
--subj "/C=US/ST=Utah/L='Salt Lake City'/O='University of Utah CHPC'/CN=www.chpc.utah.edu"
+#mkdir -p /etc/letsencrypt/live/$hostname
+#cd /etc/letsencrypt/live/$hostname
+#openssl req -x509 -newkey rsa:4096 -nodes -keyout privkey.pem -out cert.pem \
+#-subj "/C=US/ST=Utah/L='Salt Lake City'/O='University of Utah CHPC'/CN=www.chpc.utah.edu"
 
 sleep 10
 ############################################## Config ##########################################################
@@ -162,29 +162,29 @@ EOF
 /opt/ood/ood-portal-generator/sbin/update_ood_portal
 systemctl start httpd24-httpd
 # Configure apache for OnDemand
-#cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
-#OIDCProviderMetadataURL https://$hostname:8443/auth/realms/ondemand/.well-known/openid-configuration
-#OIDCClientID        "ondemand_client"
-#OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
-#OIDCRedirectURI      https://$hostname/oidc
-#OIDCCryptoPassphrase "4444444444444444444444444444444444444444"
-#
-## Keep sessions alive for 8 hours
-#OIDCSessionInactivityTimeout 28800
-#OIDCSessionMaxDuration 28800
-#
-## Set REMOTE_USER
-#OIDCRemoteUserClaim preferred_username
-#
-## Don't pass claims to backend servers
-#OIDCPassClaimsAs environment
-#
-## Strip out session cookies before passing to backend
-#OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
-#EOF
-#mkdir /root/ssl
-##Startup Apache
-#/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
+cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
+OIDCProviderMetadataURL https://$hostname:443/auth/realms/ondemand/.well-known/openid-configuration
+OIDCClientID        "ondemand_client"
+OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
+OIDCRedirectURI      https://$hostname/oidc
+OIDCCryptoPassphrase "4444444444444444444444444444444444444444"
+
+# Keep sessions alive for 8 hours
+OIDCSessionInactivityTimeout 28800
+OIDCSessionMaxDuration 28800
+
+# Set REMOTE_USER
+OIDCRemoteUserClaim preferred_username
+
+# Don't pass claims to backend servers
+OIDCPassClaimsAs environment
+
+# Strip out session cookies before passing to backend
+OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
+EOF
+mkdir /root/ssl
+#Startup Apache
+/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 ##Change permissions and rebuild the portal
 #chgrp apache /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
 #chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
