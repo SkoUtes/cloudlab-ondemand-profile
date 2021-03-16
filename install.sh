@@ -72,7 +72,7 @@ chmod 0750 /opt/apachectl-wrapper.sh
 #--apache-ctl /opt/apachectl-wrapper.sh
 
 # Get self-signed certs using openssl
-mkdir /etc/letsencrypt/live/$hostname
+mkdir -p /etc/letsencrypt/live/$hostname
 cd /etc/letsencrypt/live/$hostname
 openssl req -x509 -newkey rsa:4096 -nodes -keyout privkey.pem -out cert.pem \
 -subj "/C=US/ST=Utah/L='Salt Lake City'/O='University of Utah CHPC'/CN=www.chpc.utah.edu"
