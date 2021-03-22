@@ -20,15 +20,15 @@ request = portal.context.makeRequestRSpec()
 pc = portal.Context()
 
 # Create two nodes
-node1 = request.RawPC("node1")
+node = request.RawPC("node1")
 
 # Set each of the two to specifically request "m400" nodes, which in CloudLab, are ARM
-node1.hardware_type = "m400"
+node.hardware_type = "m400"
 
 # Request an image for this node
-node1.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
+node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
 # Install and execute startup scripts
-node1.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/ondemand.sh"))
+node.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/ondemand.sh"))
 
 portal.context.printRequestRSpec()
