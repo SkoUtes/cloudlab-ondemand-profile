@@ -16,6 +16,9 @@ import geni.rspec.igext as ig
 # Create a request object
 request = portal.context.makeRequestRSpec()
 
+# Create a portal context to define parameters
+pc = portal.Context()
+
 # Create two nodes
 node1 = request.RawPC("node1")
 
@@ -29,5 +32,3 @@ node1.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD
 node1.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/ondemand.sh"))
 
 portal.context.printRequestRSpec()
-
-
