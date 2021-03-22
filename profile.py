@@ -22,9 +22,6 @@ node1 = request.RawPC("node1")
 # Set each of the two to specifically request "m400" nodes, which in CloudLab, are ARM
 node1.hardware_type = "m400"
 
-# Create a link between them
-link1 = request.Link(members = [node1, node2])
-
 # Request an image for this node
 node1.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
