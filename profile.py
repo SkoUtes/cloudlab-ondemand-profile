@@ -20,10 +20,10 @@ request = portal.context.makeRequestRSpec()
 pc = portal.Context()
 
 # Create two nodes
-node = request.RawPC("node1")
+node = request.RawPC("node")
 
 # Set each of the two to specifically request "m400" nodes, which in CloudLab, are ARM
-node.hardware_type = "m400"
+#node.hardware_type = "m400"
 
 # Request an image for this node
 node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
