@@ -3,7 +3,7 @@
 
 1. First wait for yum update to finish on both hosts, you have to manually delete these processes with a kill -9 PID command since they get stuck on cleanup. Use `watch tail /local/logs/install.log` and wait until it stops at `Cleanup 420/420`
 2. When the process is killed wait for both scripts to finish before proceeding futher
-3. To collect certs on the OnDemand host `node1` set your email as an environment variable `export email=[Your email]` and run the following command:
+3. To collect certs on the OnDemand host `node1` set your email as an env variable `export email=[Your email]` and run the following command:
 ```bash
 certbot -m $email -d $hostname --agree-tos --apache \
 --apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
