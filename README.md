@@ -17,5 +17,5 @@ certbot --apache -m $email -d $hostname --agree-tos
 5. Then run the scripts `ondemand_config.sh` and `keycloak_config.sh` on their respective hosts
 
 
-### After this you should be able to access both OnDemand and Keycloak at their CloudLab assigned hostnames
+#### After this you should be able to access both OnDemand and Keycloak at their CloudLab assigned hostnames.
 #### If there is an issue concerning certs you may be past the weekly limit, if so try to renew the old cert, or start up a new instance with a different instance name.
