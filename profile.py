@@ -28,7 +28,7 @@ node1.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD
 node2.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD"
 
 # Install and execute startup scripts
-node1.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/ondemand.sh"))
-node2.addService(rspec.Execute(shell="sh", command="sudo -u root /local/repository/keycloak.sh"))
+node1.addService(rspec.Execute(shell="sh", command="sudo -u root chmod 700 /local/repository/ondemand.sh && /local/repository/ondemand.sh"))
+node2.addService(rspec.Execute(shell="sh", command="sudo -u root chmod 700 /local/repository/keycloak.sh && /local/repository/keycloak.sh"))
 
 portal.context.printRequestRSpec()
