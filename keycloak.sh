@@ -45,3 +45,54 @@ EOF
 # Start up keycloak
 systemctl daemon-reload
 systemctl start keycloak
+
+# Install and configure default apache
+yum install -y httpd
+yum install -y mod_ssl
+awk '/## SSL Virtual Host Context/ { print; print "NameVirtualHost *:443"; next }1' /etc/httpd/conf.d/ssl.conf
+cat > /etc/httpd/conf.d/keycloak.conf <<EOF
+<VirtualHost *:80>
+  ServerName node2.ondemand.slate-pg0.wisc.cloudlab.us
+
+  ErrorLog  "/var/log/httpd/error_log"
+  CustomLog "/var/log/httpd/access_log" combined
+</VirtualHost>
+EOF
+systemctl start httpd
+
+# Install certbot
+yum install -y snapd
+systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
+snap install core ; snap install core ; snap refresh core
+snap install --classic certbot ; snap install --classic certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
+
+# Run certbot
+certbot --apache -d $hostname --agree-tos -m u1064657@umail.utah.edu
+
+# Place apache in front of keycloak
+cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
+<VirtualHost *:443>
+  ServerName $hostname
+
+  ErrorLog  "/var/log/httpd/error_log"
+  CustomLog "/var/log/httpd/access_log" combined
+
+  SSLEngine on
+  SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"
+  SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"
+  SSLCACertificatePath    "/etc/letsencrypt/live/$hostname"
+  Include "/etc/letsencrypt/options-ssl-apache.conf"
+
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyPass / http://localhost:8080/
+  ProxyPassReverse / http://localhost:8080/
+
+  RequestHeader set X-Forwarded-Proto "https"
+  RequestHeader set X-Forwarded-Port "443"
+</VirtualHost>
+EOF
+
+# Restart keycloak and apache
+systemctl restart httpd keycloak
