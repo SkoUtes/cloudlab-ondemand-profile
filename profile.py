@@ -1,9 +1,8 @@
-"""An example of constructing a profile with install and execute services. 
+"""An instance for testing SLATE Open OnDemand features and changes
 
 Instructions:
-Wait for the profile instance to start, then click on the node in the topology
-and choose the `shell` menu item. The install and execute services are handled
-automatically during profile instantiation, with no manual intervention required.
+Wait for the profile instance to start, then ssh into both of the nodes
+and follow the instructions outlined in the README.md file
 """
 
 # Import the Portal object.
