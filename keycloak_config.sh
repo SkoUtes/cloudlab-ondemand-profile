@@ -1,6 +1,4 @@
 #!/bin/bash
-# Run certbot
-certbot --apache -d $hostname --agree-tos -m u1064657@umail.utah.edu
 
 # Place apache in front of keycloak
 cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
