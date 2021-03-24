@@ -1,4 +1,7 @@
 #!/bin/bash
+
+export hostname=$(hostname)
+
 # Configure ood_portal.yml file
 cat > /etc/ood/config/ood_portal.yml <<EOF
 # /etc/ood/config/ood_portal.yml
