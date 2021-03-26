@@ -21,7 +21,7 @@ certbot --apache -m $email -d $(hostname) --agree-tos
 
 Access the Keycloak GUI and log in with the user `admin` and the admin password stored by root. Go to the ondemand realm, select the ondemand_client, and click on the `credentials` tab to get the client-secret. Then in the terminal for the OnDemand host, edit the file at `/opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf` and input the client-secret like so:
 
-```apacheconf
+```bash
 OIDCProviderMetadataURL https://$kc_host/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "client-secret"
