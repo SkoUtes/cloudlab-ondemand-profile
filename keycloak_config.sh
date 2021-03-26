@@ -38,4 +38,5 @@ systemctl restart keycloak
 export keycloak="/opt/keycloak-9.0.0/bin/kcadm.sh"
 $keycloak create realms -s realm=ondemand -s enabled=true
 export redirect_uris="[\"https://$ood_host\",\"https://$ood_host/oidc\"]"
-$keycloak create clients -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
+export server="http://localhost:8080/auth"
+$keycloak create clients --server $server -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
