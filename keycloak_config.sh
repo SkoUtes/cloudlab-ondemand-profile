@@ -6,6 +6,7 @@ export ood_host=$(hostname | sed 's/2/1/')
 
 # Place apache in front of keycloak
 cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
+Listen 443
 <VirtualHost $server_ip:443>
   ServerName $hostname
 
@@ -42,6 +43,15 @@ export realm="master"
 export user="admin"
 export password=$(cat /root/kc-password.txt)
 
-$keycloak config credentials --server $server --realm $realm --user $user --password $password
+# Try to log into keycloak as admin user and retry up to 5 times
+n=0
+until [ "$n" -ge 5 ]
+do
+        $keycloak config credentials --server $server --realm $realm --user $user --password $password && break
+        n=$((n+1))
+        sleep 5
+done
+
+# Create keycloak realm and client
 $keycloak create realms -s realm=ondemand -s enabled=true
 $keycloak create clients --server $server -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
