@@ -18,6 +18,7 @@ sudo -u keycloak chmod 0700 standalone
 yum install -y java-1.8.0-openjdk-devel
 # Generate admin user
 export KC_PASSWORD=$(openssl rand -hex 20) && echo $KC_PASSWORD >> /root/kc-password.txt
+chmod 0600 /root/kc-password.txt
 sudo -u keycloak ./bin/add-user-keycloak.sh --user admin --password $KC_PASSWORD --realm master
 # Enable proxying to keycloak
 sudo -u keycloak ./bin/jboss-cli.sh 'embed-server,/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=proxy-address-forwarding,value=true)'
