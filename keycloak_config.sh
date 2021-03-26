@@ -2,6 +2,7 @@
 
 export server_ip=$(ip addr | grep -E -o '[0-9]{3}\.[0-9]{3}\.[0-9]{1,3}\.[0-9]{1,3}/22' | sed 's/\/22//g')
 export hostname=$(hostname)
+export ood-host=$(hostname | sed 's/2/1/')
 
 # Place apache in front of keycloak
 cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
@@ -34,7 +35,6 @@ systemctl restart keycloak
 
 ####################### Keycloak Parameters #####################
 
-export ood-host=$(hostname | sed 's/2/1/')
 export keycloak="/opt/jboss/keycloak/bin/kcadm.sh"
 $keycloak create realms -s realm=ondemand -s enabled=true
 export redirect_uris"[\"https://$ood-host\",\"https://$ood-host/oidc\"]"

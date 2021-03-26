@@ -17,6 +17,27 @@ certbot --apache -m $email -d $(hostname) --agree-tos
 ```
 6. Then run the scripts `ondemand_config.sh` and `keycloak_config.sh` on their respective hosts
 
+#### Setting up Keycloak Authentication
 
-#### After this you should be able to access both OnDemand and Keycloak at their CloudLab assigned hostnames.
-#### If there is an issue concerning certs you may be past the weekly limit, if so try to renew the old cert, or start up a new instance with a different instance name.
+Access the Keycloak GUI and log in with the user `admin` and the admin password stored by root. Go to the ondemand realm, select the ondemand_client, and click on the `credentials` tab to get the client-secret. Then in the terminal for the OnDemand host, edit the file at `/opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf` and input the client-secret like so:
+
+```apacheconf
+OIDCProviderMetadataURL https://$kc_host/auth/realms/ondemand/.well-known/openid-configuration
+OIDCClientID        "ondemand_client"
+OIDCClientSecret    "client-secret"
+OIDCRedirectURI      https://$hostname/oidc
+OIDCCryptoPassphrase "$(openssl rand -hex 40)"
+
+# Keep sessions alive for 8 hours
+OIDCSessionInactivityTimeout 28800
+OIDCSessionMaxDuration 28800
+
+# Set REMOTE_USER
+OIDCRemoteUserClaim preferred_username
+
+# Don't pass claims to backend servers
+OIDCPassClaimsAs environment
+
+# Strip out session cookies before passing to backend
+OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
+```
