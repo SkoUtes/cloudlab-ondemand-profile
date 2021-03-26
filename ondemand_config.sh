@@ -38,6 +38,7 @@ servername: $hostname
 ssl:
   - 'SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"'
   - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"'
+  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/chain.pem"'
 EOF
 # Start up Apache
 /opt/ood/ood-portal-generator/sbin/update_ood_portal

@@ -14,6 +14,7 @@ cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
   SSLEngine on
   SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"
   SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"
+  SSLCertificateChaineFile "/etc/letsencrypt/live/$hostname/chain.pem"
   SSLCACertificatePath    "/etc/letsencrypt/live/$hostname"
   Include "/etc/letsencrypt/options-ssl-apache.conf"
 
