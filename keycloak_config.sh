@@ -30,3 +30,11 @@ EOF
 # Restart keycloak and apache
 systemctl restart httpd 
 systemctl restart keycloak
+
+####################### Keycloak Parameters #####################
+
+export ood-host=$(hostname | sed 's/2/1/')
+export keycloak="/opt/jboss/keycloak/bin/kcadm.sh"
+$keycloak create realms -s realm=ondemand -s enabled=true
+export redirect_uris"[\"https://$ood-host\",\"https://$ood-host/oidc\"]"
+$keycloak create clients -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true

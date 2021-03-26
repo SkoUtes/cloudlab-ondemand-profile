@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export hostname=$(hostname)
+export kc_host=$(hostname | sed 's/1/2/')
 
 # Configure ood_portal.yml file
 cat > /etc/ood/config/ood_portal.yml <<EOF
@@ -43,11 +44,11 @@ EOF
 /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 # Configure apache for OnDemand
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
-OIDCProviderMetadataURL https://$hostname:443/auth/realms/ondemand/.well-known/openid-configuration
+OIDCProviderMetadataURL https://$kc_host/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
 OIDCRedirectURI      https://$hostname/oidc
-OIDCCryptoPassphrase "4444444444444444444444444444444444444444"
+OIDCCryptoPassphrase "$(openssl rand -hex 40)"
 
 # Keep sessions alive for 8 hours
 OIDCSessionInactivityTimeout 28800
