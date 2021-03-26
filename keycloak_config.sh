@@ -15,7 +15,7 @@ cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
   SSLEngine on
   SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"
   SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"
-  SSLCertificateChaineFile "/etc/letsencrypt/live/$hostname/chain.pem"
+  SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/chain.pem"
   SSLCACertificatePath    "/etc/letsencrypt/live/$hostname"
   Include "/etc/letsencrypt/options-ssl-apache.conf"
 
@@ -35,7 +35,7 @@ systemctl restart keycloak
 
 ####################### Keycloak Parameters #####################
 
-export keycloak="/opt/jboss/keycloak/bin/kcadm.sh"
+export keycloak="/opt/keycloak-9.0.0/bin/kcadm.sh"
 $keycloak create realms -s realm=ondemand -s enabled=true
 export redirect_uris"[\"https://$ood_host\",\"https://$ood_host/oidc\"]"
 $keycloak create clients -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
