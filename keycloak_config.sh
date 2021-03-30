@@ -31,6 +31,16 @@ Listen 443
 EOF
 
 # Restart keycloak and apache
+
+cat > /etc/httpd/conf.d/keycloak.conf <<EOF
+<VirtualHost *:80>
+  ServerName node2.ondemand.slate-pg0.wisc.cloudlab.us
+
+  ErrorLog  "/var/log/httpd/error_log"
+  CustomLog "/var/log/httpd/access_log" combined
+</VirtualHost>
+EOF
+
 systemctl restart httpd 
 systemctl restart keycloak
 

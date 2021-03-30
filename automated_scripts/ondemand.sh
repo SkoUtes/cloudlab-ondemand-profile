@@ -3,7 +3,6 @@
 # Create logfile
 exec > /local/logs/install.log 2>&1
 
-export hostname=$(hostname)
 # Install Open OnDemand components
 sleep 10
 yum update -y 
