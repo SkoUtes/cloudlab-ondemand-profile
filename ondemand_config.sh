@@ -2,7 +2,6 @@
 
 export hostname=$(hostname)
 export kc_host=$(hostname | sed 's/1/2/')
-export server_ip=$(ip addr | grep -E -o '[0-9]{3}\.[0-9]{3}\.[0-9]{1,3}\.[0-9]{1,3}/22' | sed 's/\/22//g')
 
 # Configure ood_portal.yml file
 cat > /etc/ood/config/ood_portal.yml <<EOF
@@ -19,14 +18,14 @@ auth:
 # Example:
 #     servername: 'www.example.com'
 # Default: null (don't use name-based Virtual Host)
-#servername: $hostname
+servername: '$hostname'
 
 # Redirect user to the following URI when accessing logout URI
 # Example:
 #     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
 # Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
 # HTML page explaining logout to the user)
-logout_redirect: '/oidc?logout=https%3A%2F%2F$server_ip'
+logout_redirect: '/oidc?logout=https%3A%2F%2F$hostname'
 
 # Sub-uri used by mod_auth_openidc for authentication
 # Example:
@@ -36,19 +35,19 @@ oidc_uri: '/oidc'
 
 # Certificates
 ssl:
-  - 'SSLCertificateFile "/etc/letsencrypt/live/$server_ip/cert.pem"'
-  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$server_ip/privkey.pem"'
-  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$server_ip/chain.pem"'
+  - 'SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"'
+  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"'
+  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/chain.pem"'
 EOF
 # Start up Apache
-/opt/ood/ood-portal-generator/sbin/update_ood_portal
+#/opt/ood/ood-portal-generator/sbin/update_ood_portal
 /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 # Configure apache for OnDemand
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 OIDCProviderMetadataURL https://$kc_host/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
-OIDCRedirectURI      https://$server_ip/oidc
+OIDCRedirectURI      https://$hostname/oidc
 OIDCCryptoPassphrase "$(openssl rand -hex 40)"
 
 # Keep sessions alive for 8 hours

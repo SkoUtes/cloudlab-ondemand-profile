@@ -6,7 +6,6 @@ export ood_host=$(hostname | sed 's/2/1/')
 
 # Place apache in front of keycloak
 cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF
-Listen 443
 <VirtualHost $server_ip:443>
   ServerName $hostname
 
