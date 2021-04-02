@@ -49,7 +49,6 @@ ssl:
   - 'SSLCertificateChainFile "/etc/letsencrypt/live/$ood_host/chain.pem"'
 EOF
 # Start up Apache
-#/opt/ood/ood-portal-generator/sbin/update_ood_portal
 /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 # Configure apache for OnDemand
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
@@ -72,6 +71,9 @@ OIDCPassClaimsAs environment
 # Strip out session cookies before passing to backend
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 EOF
-#Change permissions
+# Change permissions
 chgrp apache /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
 chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
+# Update the portal and restart apache
+/opt/ood/ood-portal-generator/sbin/update_ood_portal -f
+systemctl restart httpd24-httpd

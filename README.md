@@ -30,3 +30,5 @@ OIDCPassClaimsAs environment
 # Strip out session cookies before passing to backend
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 ```
+
+When that's done save the file and restart apache using `systemctl restart httpd24-httpd`
