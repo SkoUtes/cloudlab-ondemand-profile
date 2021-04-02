@@ -1,5 +1,6 @@
 # Installing OnDemand and Keycloak 
 
+### Setup and Configuration
 
 1. First SSH into both nodes and go to the `/local` directory.
 2. Wait for yum update to finish on both hosts, you have to manually delete these processes with a kill -9 PID command since they get stuck on cleanup. Use `watch tail /local/logs/install.log` and wait until it stops at `Cleanup 420/420`. Then use `ps aux | grep yum` to get the process ID.
@@ -7,7 +8,7 @@
 4. Run the `ondemand_config.sh` and `keycloak_config.sh` scripts on each host and input your email to get up letsencrypt certs. When running the OnDemand script, use the DNS name of the node which should be visible in the CloudLab portal.
 5. When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.host` and `https://keycloak.host`. To get the hostname alias, run the `hostname` command in the terminal.
 
-### Setting up Keycloak Authentication
+### Keycloak Authentication
 
 Access the Keycloak GUI and log in with the user `admin` and the admin password stored by root. Then go to the Ondemand realm and to set up the client. First createa a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with the `temporary password` field set to OFF. 
 
