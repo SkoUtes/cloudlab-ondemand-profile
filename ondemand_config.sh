@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -p "Email: " email
-read -p "DNS Record: " ood_host
+read -p "Cloudlab DNS Record: " ood_host
 export kc_host=$(hostname | sed 's/1/2/')
 
 # Run certbot
