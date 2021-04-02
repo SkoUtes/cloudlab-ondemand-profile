@@ -1,8 +1,13 @@
 #!/bin/bash
 
+read -p "Email: " email
 export server_ip=$(ip addr | grep -E -o '[0-9]{3}\.[0-9]{3}\.[0-9]{1,3}\.[0-9]{1,3}/22' | sed 's/\/22//g')
 export hostname=$(hostname)
 export ood_host=$(hostname | sed 's/2/1/')
+
+# Run certbot
+
+certbot --apache -m $email -d $hostname --agree-tos
 
 # Place apache in front of keycloak
 cat > /etc/httpd/conf.d/ood-keycloak.conf <<EOF

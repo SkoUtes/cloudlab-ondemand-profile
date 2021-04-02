@@ -1,7 +1,15 @@
 #!/bin/bash
 
-export hostname=$(hostname)
+read -p "Email: " email
+read -p "DNS Record: " ood_host
 export kc_host=$(hostname | sed 's/1/2/')
+
+# Run certbot
+
+certbot -m $email -d $ood_host --agree-tos --apache \
+--apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
+--apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
+--apache-ctl /opt/apachectl-wrapper.sh
 
 # Configure ood_portal.yml file
 cat > /etc/ood/config/ood_portal.yml <<EOF
@@ -18,14 +26,14 @@ auth:
 # Example:
 #     servername: 'www.example.com'
 # Default: null (don't use name-based Virtual Host)
-servername: '$hostname'
+servername: '$ood_host'
 
 # Redirect user to the following URI when accessing logout URI
 # Example:
 #     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
 # Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
 # HTML page explaining logout to the user)
-logout_redirect: '/oidc?logout=https%3A%2F%2F$hostname'
+logout_redirect: '/oidc?logout=https%3A%2F%2F$ood_host'
 
 # Sub-uri used by mod_auth_openidc for authentication
 # Example:
@@ -35,9 +43,9 @@ oidc_uri: '/oidc'
 
 # Certificates
 ssl:
-  - 'SSLCertificateFile "/etc/letsencrypt/live/$hostname/cert.pem"'
-  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$hostname/privkey.pem"'
-  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$hostname/chain.pem"'
+  - 'SSLCertificateFile "/etc/letsencrypt/live/$ood_host/cert.pem"'
+  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$ood_host/privkey.pem"'
+  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$ood_host/chain.pem"'
 EOF
 # Start up Apache
 #/opt/ood/ood-portal-generator/sbin/update_ood_portal
@@ -47,7 +55,7 @@ cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 OIDCProviderMetadataURL https://$kc_host/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
-OIDCRedirectURI      https://$hostname/oidc
+OIDCRedirectURI      https://$ood_host/oidc
 OIDCCryptoPassphrase "$(openssl rand -hex 40)"
 
 # Keep sessions alive for 8 hours
