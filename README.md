@@ -8,7 +8,7 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 2. Wait for yum update to finish on both hosts, you have to manually delete these processes with a kill -9 PID command since they get stuck on cleanup. Use `watch tail /local/logs/install.log` and wait until it stops at `Cleanup 420/420`. Then use `ps aux | grep yum` to get the process ID.
 3. When the process is killed wait for both scripts to finish before proceeding futher.
 4. Run the `ondemand_config.sh` and `keycloak_config.sh` scripts on each host and input your email to get up letsencrypt certs. When running the OnDemand script, use the DNS name of the node which should be visible in the CloudLab portal.
-5. When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.host` and `https://keycloak.host`. To get the hostname alias, run the `hostname` command in the terminal.
+5. When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.example.host` and `https://keycloak.example.host`. To get the hostname aliases, run the `hostname` command in the terminal.
 
 ### Keycloak Authentication
 
