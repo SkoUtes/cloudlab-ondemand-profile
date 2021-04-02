@@ -2,6 +2,8 @@
 
 ### Setup and Configuration
 
+To start this instance, log in to CloudLab and create a new experiment using the `slate-open-ondemand` profile
+
 1. First SSH into both nodes and go to the `/local` directory.
 2. Wait for yum update to finish on both hosts, you have to manually delete these processes with a kill -9 PID command since they get stuck on cleanup. Use `watch tail /local/logs/install.log` and wait until it stops at `Cleanup 420/420`. Then use `ps aux | grep yum` to get the process ID.
 3. When the process is killed wait for both scripts to finish before proceeding futher.
