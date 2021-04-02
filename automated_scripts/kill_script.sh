@@ -5,8 +5,12 @@ sleep 20
 while :
 do
 	sleep 2
-	if [[ tail /local/logs/install.log ]]; then
+	if [[ tail /local/logs/install.log | grep -E -o '(Cleanup\s{4}: libgcc-4.8.5-39.el7\s{38}420/420)' ]]; do
 		break
+	else
+		:
 	fi
 done
-ps aux|grep yum update|cut -c -25 |grep -E -o '[0-9]{3,5}'
+sleep 10
+export yum_ps=$(ps aux|grep "/bin/yum update -y"|cut -c -25 |grep -E -o '[0-9]{3,5}')
+kill -9 $yum_ps

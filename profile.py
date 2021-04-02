@@ -29,10 +29,14 @@ node2.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS7-64-STD
 # Install and execute startup scripts
 node1.addService(rspec.Execute(shell="sh", command="sudo -u root chmod 700 \
 	/local/repository/automated_scripts/ondemand.sh && \
+	sudo -u root chmod 700 /local/repository/automated_scripts/kill_script.sh && \
+	sudo -u root /local/repository/automated_scripts/kill_script.sh & disown && \
 	sudo -u root chmod 700 /local/repository/ondemand_config.sh && \
 	sudo -u root /local/repository/automated_scripts/ondemand.sh"))
 node2.addService(rspec.Execute(shell="sh", command="sudo -u root chmod 700 \
 	/local/repository/automated_scripts/keycloak.sh && \
+	sudo -u root chmod 700 /local/repository/automated_scripts/kill_script.sh && \
+	sudo -u root /local/repository/automated_scripts/kill_script.sh & disown && \
 	sudo -u root chmod 700 /local/repository/keycloak_config.sh && \
 	sudo -u root /local/repository/automated_scripts/keycloak.sh"))
 
