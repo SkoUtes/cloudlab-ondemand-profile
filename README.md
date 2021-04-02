@@ -2,7 +2,7 @@
 
 ### Setup and Configuration
 
-To start up an instance, log in to CloudLab and create a new experiment using the `slate-open-ondemand` profile
+To start up an instance, log in to CloudLab and create a new experiment using the `slate-open-ondemand` profile.
 
 1. First SSH into both nodes and go to the `/local` directory.
 2. Wait for yum update to finish on both hosts, you have to manually delete these processes with a kill -9 PID command since they get stuck on cleanup. Use `watch tail /local/logs/install.log` and wait until it stops at `Cleanup 420/420`. Then use `ps aux | grep yum` to get the process ID.
@@ -12,7 +12,12 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 
 ### Keycloak Authentication
 
-Access the Keycloak GUI and log in with the user `admin` and the admin password stored by root. Then go to the Ondemand realm and to set up the client. First createa a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with the `temporary password` field set to OFF. 
+Access the Keycloak GUI and log in with the user `admin` and the admin password stored by root. Then go to the Ondemand realm and to set up the client. First create a a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with the `temporary password` field set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
+
+```bash
+useradd "test-user"
+passwd test-user
+```
 
 Next go to the `clients` tab and elect the ondemand_client, and click on the `credentials` tab to get the client-secret. Then in the terminal for the OnDemand host, edit the file at `/opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf` and input the client-secret like so:
 
@@ -37,4 +42,4 @@ OIDCPassClaimsAs environment
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 ```
 
-When that's done save the file and restart apache using `systemctl restart httpd24-httpd`.
+When that's done save the file and restart apache using `systemctl restart httpd24-httpd`. Then to check if your setup is correct, go to `https://ondemand.example.host` and see if you can log in with your test user.
