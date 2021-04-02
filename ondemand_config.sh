@@ -3,6 +3,7 @@
 read -p "Email: " email
 read -p "Cloudlab DNS Record: " ood_host
 export kc_host=$(hostname | sed 's/1/2/')
+export hostname=$(hostname)
 
 # Run certbot
 
@@ -26,14 +27,14 @@ auth:
 # Example:
 #     servername: 'www.example.com'
 # Default: null (don't use name-based Virtual Host)
-servername: '$ood_host'
+servername: '$hostname'
 
 # Redirect user to the following URI when accessing logout URI
 # Example:
 #     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
 # Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
 # HTML page explaining logout to the user)
-logout_redirect: '/oidc?logout=https%3A%2F%2F$ood_host'
+logout_redirect: '/oidc?logout=https%3A%2F%2F$hostname'
 
 # Sub-uri used by mod_auth_openidc for authentication
 # Example:
@@ -54,8 +55,8 @@ EOF
 cat > /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf <<EOF
 OIDCProviderMetadataURL https://$kc_host/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
-OIDCClientSecret    "1111111-1111-1111-1111-111111111111"
-OIDCRedirectURI      https://$ood_host/oidc
+OIDCClientSecret    "no-way-jose"
+OIDCRedirectURI      https://$hostname/oidc
 OIDCCryptoPassphrase "$(openssl rand -hex 40)"
 
 # Keep sessions alive for 8 hours
