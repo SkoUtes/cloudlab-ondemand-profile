@@ -4,15 +4,14 @@
 
 To start up an instance, log in to CloudLab and create a new experiment using the `slate-open-ondemand` profile.
 
-1. First SSH into both nodes and go to the `/local` directory.
-2. Wait for yum update to finish on both hosts, you have to manually delete these processes with a kill -9 PID command since they get stuck on cleanup. Use `watch tail /local/logs/install.log` and wait until it stops at `Cleanup 420/420`. Then use `ps aux | grep yum` to get the process ID.
-3. When the process is killed wait for both scripts to finish before proceeding futher.
-4. Run the `ondemand_config.sh` and `keycloak_config.sh` scripts on each host and input your email to get up letsencrypt certs. When running the OnDemand script, use the DNS name of the node which should be visible in the CloudLab portal.
-5. When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.example.host` and `https://keycloak.example.host`. To get the hostname aliases, run the `hostname` command in the terminal.
+1. First SSH into both nodes and go to the `/local/logs` directory.
+2. Use `watch tail install.log` to monitor the progress of the installation. When it's completed use `certbot --version` to make sure that certbot is installed, and then go to `/local/repository`.
+3. If you are qualified you should be able to switch to the root user by running `sudo -i`. Then run the `ondemand_config.sh` script on node1 and `keycloak_config.sh` script on node2. Follow the prompts and input your email to get up letsencrypt certs. When running the OnDemand script, use the FQDN name of the node which should be visible in the CloudLab portal.
+4.   When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.example.host` and `https://keycloak.example.host`. To get the hostname aliases, run the `hostname` command in the terminal.
 
 ### Keycloak Authentication
 
-Access the Keycloak GUI and log in with the user `admin` and the admin password stored by root. Then go to the Ondemand realm and to set up the client. First create a a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with the `temporary password` field set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
+Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. Then go to the Ondemand realm and to set up the client. First create a a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with the `temporary password` field set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
 
 ```bash
 useradd "test-user"
@@ -42,4 +41,4 @@ OIDCPassClaimsAs environment
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 ```
 
-When that's done save the file and restart apache using `systemctl restart httpd24-httpd`. Then to check if your setup is correct, go to `https://ondemand.example.host` and see if you can log in with your test user.
+Then save the file and restart apache using `systemctl restart httpd24-httpd`. Then to check if your setup is correct, go to `https://ondemand.example.host` and see if you can log in with your test user.
