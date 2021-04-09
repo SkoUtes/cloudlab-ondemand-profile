@@ -6,7 +6,7 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 
 1. First SSH into both nodes and go to the `/local/logs` directory.
 2. Use `watch tail install.log` to monitor the progress of the installation. When it's completed use `certbot --version` to make sure that certbot is installed, and then go to `/local/repository`.
-3. If you are qualified you should be able to switch to the root user by running `sudo -i`. Then run the `ondemand_config.sh` script on node1 and `keycloak_config.sh` script on node2. Follow the prompts and input your email to get up letsencrypt certs. When running the OnDemand script, use the FQDN of the node which should be visible in the CloudLab portal.
+3. Switch to the root user with `sudo -i`. Then run the `ondemand_config.sh` script on node1 and `keycloak_config.sh` script on node2. Follow the prompts and input your email to get up letsencrypt certs. When running the OnDemand script, use the FQDN of the node which should be visible in the CloudLab portal.
 4.   When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.example.host` and `https://keycloak.example.host`. To get the hostname aliases, run the `hostname` command in the terminal.
 
 ### Keycloak Authentication
