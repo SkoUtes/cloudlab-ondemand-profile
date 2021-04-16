@@ -78,7 +78,7 @@ chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
 /opt/ood/ood-portal-generator/sbin/update_ood_portal -f
 systemctl restart httpd24-httpd
 
-# Set up hostBasedAuthentication
+# Set up hostBasedAuthentication (dependent on temporary fix)
 sed -i '1s/^/HostBasedAuthentication yes\nEnableSSHKeysign yes\n/' /etc/ssh/ssh_config
 chgrp ssh_keys /etc/ssh/*_key
 chmod g+r /etc/ssh/*_key
