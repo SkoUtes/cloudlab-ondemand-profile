@@ -1,13 +1,13 @@
 #!/bin/bash
 
 read -p "Email: " email
-read -p "Cloudlab DNS Record: " ood_host
+read -p "Cloudlab DNS Record: " ood_dns
 export kc_host=$(hostname | sed 's/1/2/')
 export hostname=$(hostname)
 
 # Run certbot
 
-certbot -m $email -d $ood_host --agree-tos --apache \
+certbot -m $email -d $ood_dns --agree-tos --apache \
 --apache-server-root /opt/rh/httpd24/root/etc/httpd --apache-vhost-root /opt/rh/httpd24/root/etc/httpd/conf.d \
 --apache-logs-root /opt/rh/httpd24/root/etc/httpd/logs --apache-challenge-location /opt/rh/httpd24/root/etc/httpd/ \
 --apache-ctl /opt/apachectl-wrapper.sh
@@ -44,9 +44,9 @@ oidc_uri: '/oidc'
 
 # Certificates
 ssl:
-  - 'SSLCertificateFile "/etc/letsencrypt/live/$ood_host/cert.pem"'
-  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$ood_host/privkey.pem"'
-  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$ood_host/chain.pem"'
+  - 'SSLCertificateFile "/etc/letsencrypt/live/$ood_dns/cert.pem"'
+  - 'SSLCertificateKeyFile "/etc/letsencrypt/live/$ood_dns/privkey.pem"'
+  - 'SSLCertificateChainFile "/etc/letsencrypt/live/$ood_dns/chain.pem"'
 EOF
 # Start up Apache
 /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
@@ -77,3 +77,8 @@ chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
 # Update the portal and restart apache
 /opt/ood/ood-portal-generator/sbin/update_ood_portal -f
 systemctl restart httpd24-httpd
+
+# Set up hostBasedAuthentication
+sed -i '1s/^/HostBasedAuthentication yes\nEnableSSHKeysign yes\n/' /etc/ssh/ssh_config
+chgrp ssh_keys /etc/ssh/*_key
+chmod g+r /etc/ssh/*_key

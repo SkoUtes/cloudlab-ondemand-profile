@@ -68,6 +68,6 @@ snap install core ; snap install core ; snap refresh core
 snap install --classic certbot ; snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
 # Reinstall openssh
-yum erase openssh -y
-yum install openssh -y
-yum install openssh-server -y
+yum erase -y openssh
+yum install -y openssh openssh-server openssh-clients
+systemctl start sshd

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 read -p "Email: " email
+read -p "Cloudlab DNS Record: " ood_dns
 export server_ip=$(ip addr | grep -E -o '[0-9]{3}\.[0-9]{3}\.[0-9]{1,3}\.[0-9]{1,3}/22' | sed 's/\/22//g')
 export hostname=$(hostname)
 export ood_host=$(hostname | sed 's/2/1/')
@@ -69,3 +70,10 @@ done
 # Create keycloak realm and client
 $keycloak create realms -s realm=ondemand -s enabled=true
 $keycloak create clients --server $server -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
+
+# Set up hostBasedAuthentication
+sed -i 's/#HostbasedAuthentication no/HostbasedAuthentication yes/g' /etc/ssh/sshd_config
+sed -i 's/#IgnoreRhosts yes/IgnoreRhosts no/g' /etc/ssh/sshd_config
+ssh-keyscan $ood_dns > /etc/ssh/ssh_known_hosts
+echo $ood_dns > /etc/ssh/shosts.equiv
+systemctl restart sshd
