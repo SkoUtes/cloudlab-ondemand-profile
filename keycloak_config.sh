@@ -81,3 +81,13 @@ systemctl restart sshd
 yum install -y singularity
 yum install -y tmux
 singularity pull /opt/centos7.sif docker://centos:7
+cat > /etc/yum.repos.d/TurboVNC.repo << EOF
+[TurboVNC]
+name=TurboVNC official RPMs
+baseurl=https://sourceforge.net/projects/turbovnc/files
+gpgcheck=1
+gpgkey=https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY
+       https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY-1024
+enabled=1
+EOF
+yum install -y turbovnc
