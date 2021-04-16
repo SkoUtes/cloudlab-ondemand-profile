@@ -3,15 +3,15 @@
 # Create logfile
 exec > /local/logs/install.log 2>&1
 
-# Reinstall openssh (temporary fix for missing ssh_keys group)
-yum erase -y openssh
-yum install -y openssh openssh-server openssh-clients
-systemctl start sshd
-
 export hostname=$(hostname)
 # Install Open OnDemand components
 sleep 10
 yum update -y
+
+# Reinstall openssh (temporary fix for missing ssh_keys group)
+yum erase -y openssh
+yum install -y openssh openssh-server openssh-clients
+systemctl start sshd
 
 # Install Keycloak components
 cd /opt
