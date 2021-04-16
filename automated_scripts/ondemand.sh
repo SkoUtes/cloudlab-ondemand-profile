@@ -3,6 +3,11 @@
 # Create logfile
 exec > /local/logs/install.log 2>&1
 
+# Reinstall openssh (temporary fix for missing ssh_keys group)
+yum erase -y openssh
+yum install -y openssh openssh-server openssh-clients 
+systemctl start sshd
+
 # Install Open OnDemand components
 sleep 10
 yum update -y 
@@ -25,7 +30,3 @@ mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
 # Create apachectl script wrapper
 echo -e '#!/bin/bash\nscl enable httpd24 -- /opt/rh/httpd24/root/usr/sbin/apachectl $@' > /opt/apachectl-wrapper.sh
 chmod 0750 /opt/apachectl-wrapper.sh
-# Reinstall openssh
-yum erase -y openssh
-yum install -y openssh openssh-server openssh-clients 
-systemctl start sshd

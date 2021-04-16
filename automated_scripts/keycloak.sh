@@ -3,6 +3,11 @@
 # Create logfile
 exec > /local/logs/install.log 2>&1
 
+# Reinstall openssh (temporary fix for missing ssh_keys group)
+yum erase -y openssh
+yum install -y openssh openssh-server openssh-clients
+systemctl start sshd
+
 export hostname=$(hostname)
 # Install Open OnDemand components
 sleep 10
@@ -67,7 +72,3 @@ systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
 snap install core ; snap install core ; snap refresh core
 snap install --classic certbot ; snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
-# Reinstall openssh
-yum erase -y openssh
-yum install -y openssh openssh-server openssh-clients
-systemctl start sshd
