@@ -1,64 +1,37 @@
 #!/bin/bash
 
-# Set up linux_host adapter for frisco1
-mkdir /etc/ood/config/clusters.d
-cat > /etc/ood/config/clusters.d/frisco1.yml <<EOF
+read -p "Node2 (Keycloak) Cloudlab DNS record: " kc_dns
+
+# Set up keycloak host.yml
+cat > /etc/ood/config/clusters.d/kc_host.yml << EOF
 ---
 v2:
   metadata:
-    title: "frisco1"
-    url: "https://www.chpc.utah.edu/documentation/guides/frisco-nodes.php"
+    title: "kc_host"
     hidden: false
   login:
-    host: "frisco1.chpc.utah.edu"
+    host: "$kc_dns"
   job:
     adapter: "linux_host"
-    submit_host: "frisco1.chpc.utah.edu"  # This is the head for a login round robin
+    submit_host: "$kc_dns"  # This is the head for a login round robin
     ssh_hosts: # These are the actual login nodes, need to have full host name for the regex to work
-      - frisco1.chpc.utah.edu
+      - $kc_dns
     site_timeout: 7200
     debug: true
-    singularity_bin: /uufs/chpc.utah.edu/sys/installdir/singularity3/std/bin/singularity
-    singularity_bindpath: /etc,/mnt,/media,/opt,/run,/srv,/usr,/var,/uufs,/scratch
-#    singularity_image: /opt/ood/linuxhost_adapter/centos7_lmod.sif
-    singularity_image: /uufs/chpc.utah.edu/sys/installdir/ood/centos7_lmod.sif
+    singularity_bin: /bin/singularity
+    singularity_bindpath: /etc,/mnt,/media,/opt,/run,/srv,/usr,/var
+    singularity_image: /opt/centos7.sif
     # Enabling strict host checking may cause the adapter to fail if the user's known_hosts does not have all the roundrobin hosts
     strict_host_checking: false
-    tmux_bin: /usr/bin/tmux
-  batch_connect:
-    basic:
-      script_wrapper: |
-        #!/bin/bash
-        set -x
-         if [ -z "$LMOD_VERSION" ]; then
-            source /etc/profile.d/chpc.sh
-         fi
-        export XDG_RUNTIME_DIR=$(mktemp -d)
-        %s
-      set_host: "host=$(hostname -s).chpc.utah.edu"
-    vnc:
-      script_wrapper: |
-        #!/bin/bash
-        set -x
-        export PATH="/uufs/chpc.utah.edu/sys/installdir/turbovnc/std/opt/TurboVNC/bin:$PATH"
-        export WEBSOCKIFY_CMD="/uufs/chpc.utah.edu/sys/installdir/websockify/0.8.0/bin/websockify"
-        export XDG_RUNTIME_DIR=$(mktemp -d)
-        %s
-      set_host: "host=$(hostname -s).chpc.utah.edu"
-#      set_host: "host=$(hostname -A | awk '{print $3}')"
+    tmux_bin: /bin/tmux
 EOF
 
-# Set up frisco.yml host
-cat > /etc/ood/config/apps/bc_desktop/single_cluster/frisco.yml <<EOF
+# Set up keycloak desktop option
+cat > /etc/ood/config/apps/bc_desktop/single_cluster << EOF
 ---
-title: "Frisco Desktop"
-cluster: "frisco"
+title: "Keycloak Desktop"
+cluster: "kc_host"
 submit: "linux_host"
-attributes:
-  bc_queue: null
-  bc_account: null
-  bc_num_slots: 1
-  num_cores: none
 EOF
 
 # Configure ondemand portal desktop application
@@ -75,7 +48,7 @@ attributes:
   cluster:
     widget: "select"
     options:
-      - "frisco1"
+      - "kc_host"
     help: |
       Select the cluster or Frisco node to create this desktop session on.
   num_cores:

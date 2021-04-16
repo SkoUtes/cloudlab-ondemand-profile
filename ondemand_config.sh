@@ -1,7 +1,8 @@
 #!/bin/bash
 
 read -p "Email: " email
-read -p "Cloudlab DNS Record: " ood_dns
+read -p "Node1 Cloudlab DNS Record: " ood_dns
+read -p "Node 2 Cloudlab DNS Record:" kc_dns
 export kc_host=$(hostname | sed 's/1/2/')
 export hostname=$(hostname)
 
@@ -82,3 +83,4 @@ systemctl restart httpd24-httpd
 sed -i '1s/^/HostBasedAuthentication yes\nEnableSSHKeysign yes\n/' /etc/ssh/ssh_config
 chgrp ssh_keys /etc/ssh/*_key
 chmod g+r /etc/ssh/*_key
+ssh-keyscan $kc_dns > /etc/ssh/ssh_known_hosts

@@ -1,13 +1,12 @@
 #!/bin/bash
 
 read -p "Email: " email
-read -p "Cloudlab DNS Record: " ood_dns
+read -p "Node1 Cloudlab DNS Record: " ood_dns
 export server_ip=$(ip addr | grep -E -o '[0-9]{3}\.[0-9]{3}\.[0-9]{1,3}\.[0-9]{1,3}/22' | sed 's/\/22//g')
 export hostname=$(hostname)
 export ood_host=$(hostname | sed 's/2/1/')
 
 # Run certbot
-
 certbot --apache -m $email -d $hostname --agree-tos
 
 # Place apache in front of keycloak
@@ -77,3 +76,8 @@ sed -i 's/#IgnoreRhosts yes/IgnoreRhosts no/g' /etc/ssh/sshd_config
 ssh-keyscan $ood_dns > /etc/ssh/ssh_known_hosts
 echo $ood_dns > /etc/ssh/shosts.equiv
 systemctl restart sshd
+
+# Install linux_host adapter components
+yum install -y singularity
+yum install -y tmux
+singularity pull /opt/centos7.sif docker://centos:7
