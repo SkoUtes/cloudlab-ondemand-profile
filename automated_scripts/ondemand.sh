@@ -3,14 +3,16 @@
 # Create logfile
 exec > /local/logs/install.log 2>&1
 
+# Install Open OnDemand components
+sleep 10
+yum update -y 
+
 # Reinstall openssh (temporary fix for missing ssh_keys group)
 yum erase -y openssh
 yum install -y openssh openssh-server openssh-clients 
 systemctl start sshd
 
-# Install Open OnDemand components
-sleep 10
-yum update -y 
+# Install OnDemand
 sleep 10
 yum install -y epel-release centos-release-scl subscription-manager snapd
 sleep 10
