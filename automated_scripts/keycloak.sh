@@ -67,3 +67,7 @@ systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
 snap install core ; snap install core ; snap refresh core
 snap install --classic certbot ; snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
+# Reinstall openssh
+yum erase openssh -y
+yum install openssh -y
+yum install openssh-server -y
