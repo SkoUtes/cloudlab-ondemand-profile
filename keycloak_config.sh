@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -p "Email: " email
-read -p "Node1 Cloudlab DNS Record: " ood_dns
+read -p "Node1 (Ondemand) Cloudlab DNS Record: " ood_dns
 export server_ip=$(ip addr | grep -E -o '[0-9]{3}\.[0-9]{3}\.[0-9]{1,3}\.[0-9]{1,3}/22' | sed 's/\/22//g')
 export hostname=$(hostname)
 export ood_host=$(hostname | sed 's/2/1/')
