@@ -2,6 +2,8 @@
 
 read -p "Node2 (Keycloak) Cloudlab DNS record: " kc_dns
 
+mkdir /etc/ood/config/clusters.d
+
 # Set up keycloak host.yml
 cat > /etc/ood/config/clusters.d/kc_host.yml << EOF
 ---
@@ -27,7 +29,7 @@ v2:
 EOF
 
 # Set up keycloak desktop option
-cat > /etc/ood/config/apps/bc_desktop/single_cluster << EOF
+cat > /etc/ood/config/apps/bc_desktop/single_cluster/kc_host.yml << EOF
 ---
 title: "Keycloak Desktop"
 cluster: "kc_host"
