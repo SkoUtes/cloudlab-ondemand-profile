@@ -64,22 +64,21 @@ v2:
       script_wrapper: |
         #!/bin/bash
         set -x
-         if [ -z "$LMOD_VERSION" ]; then
+         if [ -z "\$LMOD_VERSION" ]; then
             source /etc/profile.d/chpc.sh
          fi
-        export XDG_RUNTIME_DIR=$(mktemp -d)
+        export XDG_RUNTIME_DIR=\$(mktemp -d)
         %s
-      set_host: "host=$(hostname -s).chpc.utah.edu"
+      set_host: "host=\$(hostname -s).chpc.utah.edu"
     vnc:
       script_wrapper: |
         #!/bin/bash
         set -x
-        export PATH="/uufs/chpc.utah.edu/sys/installdir/turbovnc/std/opt/TurboVNC/bin:$PATH"
+        export PATH="/uufs/chpc.utah.edu/sys/installdir/turbovnc/std/opt/TurboVNC/bin:\$PATH"
         export WEBSOCKIFY_CMD="/uufs/chpc.utah.edu/sys/installdir/websockify/0.8.0/bin/websockify"
-        export XDG_RUNTIME_DIR=$(mktemp -d)
+        export XDG_RUNTIME_DIR=\$(mktemp -d)
         %s
-      set_host: "host=$(hostname -s).chpc.utah.edu"
-#      set_host: "host=$(hostname -A | awk '{print $3}')"
+      set_host: "host=\$(hostname -s).chpc.utah.edu"
 EOF
 
 # Set up Frisco desktop option
