@@ -3,6 +3,16 @@
 read -p "Node2 (Keycloak) Cloudlab DNS record: " kc_dns
 
 mkdir /etc/ood/config/clusters.d
+mkdir /etc/ood/config/apps/bc_desktop/submit
+
+# Configure LinuxHost Adapter submit.yml.erb
+cat > /etc/ood/config/apps/bc_desktop/submit/linuxhost_submit.yml.erb << EOF
+---
+batch_connect:
+  native:
+    singularity_bindpath: /etc,/media,/mnt,/opt,/run,/srv,/usr,/var,/fs,/home
+    singularity_container: /opt/centos7.sif
+EOF
 
 # Set up keycloak host.yml
 cat > /etc/ood/config/clusters.d/kc_host.yml << EOF
@@ -21,19 +31,39 @@ v2:
     site_timeout: 7200
     debug: true
     singularity_bin: /bin/singularity
-    singularity_bindpath: /etc,/mnt,/media,/opt,/run,/srv,/usr,/var
+    singularity_bindpath: /etc,/media,/mnt,/opt,/run,/srv,/usr,/var,/fs,/home
     singularity_image: /opt/centos7.sif
     # Enabling strict host checking may cause the adapter to fail if the user's known_hosts does not have all the roundrobin hosts
     strict_host_checking: false
     tmux_bin: /bin/tmux
+  batch_connect:
+    basic:
+      script_wrapper: |
+        module purge
+        %s
+    vnc:
+      script_wrapper: |
+        module purge
+        export PATH="/usr/local/turbovnc/bin:\$PATH"
+        export WEBSOCKIFY_CMD="/usr/local/websockify/run"
+        %s
 EOF
 
 # Set up keycloak desktop option
-cat > /etc/ood/config/apps/bc_desktop/single_cluster/kc_host.yml << EOF
+cat > /etc/ood/config/apps/bc_desktop/kc_host.yml << EOF
 ---
 title: "Keycloak Desktop"
 cluster: "kc_host"
 submit: "linux_host"
+form:
+  - desktop
+  - bc_num_hours
+attributes:
+  bc_qeue: null
+  bc_account: null
+  bc_num_hours:
+    value: 1
+  desktop: "mate"
 EOF
 
 # Set up Frisco1 desktop option
@@ -82,7 +112,7 @@ v2:
 EOF
 
 # Set up Frisco desktop option
-cat > /etc/ood/config/apps/bc_desktop/single_cluster/frisco.yml << EOF
+cat > /etc/ood/config/apps/bc_desktop/frisco.yml << EOF
 ---
 title: "Frisco Desktop"
 cluster: "frisco"
@@ -121,12 +151,6 @@ attributes:
     min: 1
     max: 64
     step: 1
-  bc_account:
-    label: "Account"
-    value: "notchpeak-shared-short"
-  bc_queue:
-    label: "Partition"
-    value: "notchpeak-shared-short"
 
 
 form:
