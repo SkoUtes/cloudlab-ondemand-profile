@@ -5,7 +5,7 @@ sleep 20
 while :
 do
 	sleep 2
-	if tail /local/logs/install.log | grep -q -E -o '(Cleanup\s{4}: libgcc-4.8.5-39.el7'; then
+	if tail /local/logs/install.log | grep -q -E -o '(Cleanup\s{4}:\s{1}libgcc-4.8.5-39.el7'; then
 		break
 	else
 		:
