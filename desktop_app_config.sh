@@ -44,8 +44,8 @@ v2:
     vnc:
       script_wrapper: |
         module purge
-        export PATH="/usr/local/turbovnc/bin:\$PATH"
-        export WEBSOCKIFY_CMD="/usr/local/websockify/run"
+        export PATH="/opt/TurboVNC/bin:\$PATH"
+        export WEBSOCKIFY_CMD="/opt/websockify/run"
         %s
 EOF
 
@@ -131,7 +131,6 @@ cat > /var/www/ood/apps/sys/bc_desktop/form.yml <<EOF
 ---
 attributes:
   desktop: "mate"
-#  desktop: "xfce"
   bc_vnc_idle: 0
   bc_vnc_resolution:
     required: true

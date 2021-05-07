@@ -91,5 +91,9 @@ gpgkey=https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY
 enabled=1
 EOF
 yum install -y turbovnc
-yum install -y pip
-pip install websockify -y
+yum install -y python-pip
+yum install -y git
+yum install -y python3
+pip install websockify
+cd /opt && git clone https://github.com/novnc/websockify.git
+cd /opt/websockify && sed "/install_requires=['numpy']/d" ./setup.py && python3 setup.py install
