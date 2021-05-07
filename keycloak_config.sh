@@ -91,3 +91,5 @@ gpgkey=https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY
 enabled=1
 EOF
 yum install -y turbovnc
+yum install -y pip
+pip install websockify -y
