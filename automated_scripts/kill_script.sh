@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 40
+sleep 100
 
 digit=$(cat /local/logs/install.log | grep -E -o '\<1/[0-9]{3}' | grep -E -o '[0-9]{3}')
 
