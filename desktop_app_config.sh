@@ -1,9 +1,12 @@
 #!/bin/bash
 
 read -p "Node2 (Keycloak) Cloudlab DNS record: " kc_dns
+read -p "Node3 (Worker) IP address: " worker_ip
 
 mkdir /etc/ood/config/clusters.d
 mkdir /etc/ood/config/apps/bc_desktop/submit
+mkdir /etc/ood/config/apps/dashboard
+mkdir /etc/ood/config/apps/myjobs
 
 # Configure LinuxHost Adapter submit.yml.erb
 cat > /etc/ood/config/apps/bc_desktop/submit/linuxhost_submit.yml.erb << EOF
@@ -13,7 +16,6 @@ batch_connect:
     singularity_bindpath: /etc,/media,/mnt,/opt,/run,/srv,/usr,/var,/fs,/home
     singularity_container: /opt/centos7.sif
 EOF
-
 # Set up keycloak host.yml
 cat > /etc/ood/config/clusters.d/kc_host.yml << EOF
 ---
@@ -48,7 +50,6 @@ v2:
         export WEBSOCKIFY_CMD="/opt/websockify/run"
         %s
 EOF
-
 # Set up keycloak desktop option
 cat > /etc/ood/config/apps/bc_desktop/kc_host.yml << EOF
 ---
@@ -65,7 +66,6 @@ attributes:
     value: 1
   desktop: "mate"
 EOF
-
 # Set up Frisco1 desktop option
 cat > /etc/ood/config/clusters.d/frisco1.yml << EOF
 ---
@@ -110,7 +110,6 @@ v2:
         %s
       set_host: "host=\$(hostname -s).chpc.utah.edu"
 EOF
-
 # Set up Frisco desktop option
 cat > /etc/ood/config/apps/bc_desktop/frisco.yml << EOF
 ---
@@ -123,8 +122,6 @@ attributes:
   bc_num_slots: 1
   num_cores: none
 EOF
-
-
 # Configure ondemand portal desktop application
 mv /var/www/ood/apps/sys/bc_desktop/form.yml /var/www/ood/apps/sys/bc_desktop/form.yml.org
 cat > /var/www/ood/apps/sys/bc_desktop/form.yml <<EOF
@@ -164,7 +161,7 @@ form:
   - bc_vnc_resolution
   - bc_email_on_started
 EOF
-
+# Edit submit.yml.erb file
 mv /var/www/ood/apps/sys/bc_desktop/submit.yml.erb /var/www/ood/apps/sys/bc_desktop/submit.yml.erb.org
 cat > /var/www/ood/apps/sys/bc_desktop/submit.yml.erb <<EOF
 ---
@@ -186,5 +183,25 @@ form:
   - bc_vnc_resolution
   - bc_email_on_started
 EOF
-
+# Set up nfs file-sharing
+systemctl start nfs
+mkdir /nfs && chmod 0777 /nfs
+cat > /etc/exports <<EOF
+/nfs $worker_ip(rwx,sync,no_subtree_check,root_squash)
+EOF
+yum install -y autofs
+echo "/home /etc/auto.home" >> /etc/auto.master
+echo "* nfs:/home/&" >> /etc/auto.home
+mv /home /tmp/home.old; mkdir /home
+systemctl enable autofs.service
+systemctl restart autofs.service
+# Relocate ood_session_data output
+#cat > /etc/ood/config/apps/dashboard/env <<EOF
+#OOD_DATAROOT="/nfs/ood_data/\$USER"
+#EOF
+#cat > /etc/ood/config/apps/myjobs/env <<EOF
+#OOD_DATAROOT="/nfs/ood_data/\$USER"
+#EOF
+#sed -i 's/# pun custom_env:/pun custom_env:/g' /etc/ood/config/nginx_stage.yml
+#sed '/^pun custom_env:/a \ \ OOD_DATAROOT: "/nfs/ood_data/$USER"'
 systemctl restart httpd24-httpd
