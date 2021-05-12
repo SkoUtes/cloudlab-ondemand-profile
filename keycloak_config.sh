@@ -70,12 +70,6 @@ done
 $keycloak create realms -s realm=ondemand -s enabled=true
 $keycloak create clients --server $server -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
 
-# Set up hostBasedAuthentication (dependent on temporary fix)
-sed -i 's/#HostbasedAuthentication no/HostbasedAuthentication yes/g' /etc/ssh/sshd_config
-sed -i 's/#IgnoreRhosts yes/IgnoreRhosts no/g' /etc/ssh/sshd_config
-echo $ood_dns > /etc/ssh/shosts.equiv
-systemctl restart sshd
-
 echo "
 ==========================================================================
                                 Done                                            

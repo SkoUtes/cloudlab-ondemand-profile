@@ -30,8 +30,6 @@ cd /opt && git clone https://github.com/novnc/websockify.git
 cd /opt/websockify && sed "/install_requires=['numpy']/d" ./setup.py && python3 setup.py install
 yum groupinstall "Server with GUI" -y
 yum groupinstall "MATE Desktop"
-yum install -y autofs
-systemctl enable autofs.service
 
 echo "
 ==========================================================================

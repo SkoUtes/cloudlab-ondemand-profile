@@ -1,8 +1,8 @@
 #!/bin/bash
 
 read -p "Email: " email
-read -p "Node1 (Ondemand) Cloudlab DNS Record: " ood_dns
 read -p "Node2 (Keycloak) Cloudlab DNS Record: " kc_dns
+export ood_dns=$(hostname -A)
 export kc_host=$(hostname | sed 's/1/2/')
 export hostname=$(hostname)
 
