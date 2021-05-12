@@ -33,7 +33,7 @@ v2:
     site_timeout: 7200
     debug: true
     singularity_bin: /bin/singularity
-    singularity_bindpath: /etc,/media,/mnt,/opt,/run,/srv,/usr,/var,/fs,/home
+    singularity_bindpath: /etc,/media,/mnt,/opt,/run,/srv,/usr,/var,/home
     singularity_image: /opt/centos7.sif
     # Enabling strict host checking may cause the adapter to fail if the user's known_hosts does not have all the roundrobin hosts
     strict_host_checking: false
