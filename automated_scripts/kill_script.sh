@@ -1,6 +1,14 @@
 #!/bin/bash
 
-sleep 100
+while :
+do
+	sleep 2
+	if cat /local/logs/install.log | grep -q -E -o '\<1/[0-9]{3}'; then
+		break
+	else
+		:
+	fi
+done
 
 digit=$(cat /local/logs/install.log | grep -E -o '\<1/[0-9]{3}' | grep -E -o '[0-9]{3}')
 
