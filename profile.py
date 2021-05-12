@@ -46,6 +46,6 @@ node3.addService(rspec.Execute(shell="sh", command="sudo -u root chmod 700 \
 	/local/repository/automated_scripts/worker.sh && \
 	sudo -u root chmod 700 /local/repository/automated_scripts/kill_script.sh && \
 	sudo -u root /local/repository/automated_scripts/kill_script.sh & disown && \
-	sudo -u root /local/repository/automated_scripts/worker.sh"))
+	sleep 5 && sudo -u root /local/repository/automated_scripts/worker.sh"))
 
 portal.context.printRequestRSpec()
