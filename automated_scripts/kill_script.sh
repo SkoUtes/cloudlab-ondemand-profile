@@ -1,11 +1,13 @@
 #!/bin/bash
 
-sleep 20
+sleep 40
+
+digit=$(cat /local/logs/install.log | grep -E -o '\<1/[0-9]{3}' | grep -E -o '[0-9]{3}')
 
 while :
 do
 	sleep 2
-	if tail /local/logs/install.log | grep -q -E -o '(Cleanup\s{4}:\s{1}libgcc-4.8.5-39.el7'; then
+	if tail /local/logs/install.log | grep -q -E -o "Cleanup\s{4}: libgcc-4.8.5-39.el7 \s+ $digit/$digit"; then
 		break
 	else
 		:
