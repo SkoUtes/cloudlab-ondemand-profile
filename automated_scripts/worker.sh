@@ -32,3 +32,10 @@ yum groupinstall "Server with GUI" -y
 yum groupinstall "MATE Desktop"
 yum install -y autofs
 systemctl enable autofs.service
+
+echo "
+================================================================================================
+
+                                     End of Install                                             
+
+================================================================================================"

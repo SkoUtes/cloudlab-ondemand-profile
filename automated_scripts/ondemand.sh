@@ -32,3 +32,10 @@ mkdir -p /etc/ood/config/apps/bc_desktop/single_cluster
 # Create apachectl script wrapper
 echo -e '#!/bin/bash\nscl enable httpd24 -- /opt/rh/httpd24/root/usr/sbin/apachectl $@' > /opt/apachectl-wrapper.sh
 chmod 0750 /opt/apachectl-wrapper.sh
+
+echo "
+================================================================================================
+
+                                     End of Install                                             
+
+================================================================================================"
