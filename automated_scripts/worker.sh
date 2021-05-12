@@ -28,8 +28,8 @@ yum install -y python3
 pip install websockify
 cd /opt && git clone https://github.com/novnc/websockify.git
 cd /opt/websockify && sed "/install_requires=['numpy']/d" ./setup.py && python3 setup.py install
-yum groupinstall "Server with GUI" -y
-yum groupinstall "MATE Desktop"
+yum groupinstall -y "Server with GUI"
+yum groupinstall -y "MATE Desktop"
 
 echo "
 ==========================================================================

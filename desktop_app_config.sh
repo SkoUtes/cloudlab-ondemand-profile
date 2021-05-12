@@ -42,6 +42,8 @@ v2:
     basic:
       script_wrapper: |
         module purge
+        #!/bin/bash
+        export XDG_RUNTIME_DIR=$(mktemp -d)
         %s
     vnc:
       script_wrapper: |
@@ -49,6 +51,7 @@ v2:
         #!/bin/bash
         export PATH="/opt/TurboVNC/bin:\$PATH"
         export WEBSOCKIFY_CMD="/opt/websockify/run"
+        export XDG_RUNTIME_DIR=$(mktemp -d)
         %s
 EOF
 # Set up keycloak desktop option
