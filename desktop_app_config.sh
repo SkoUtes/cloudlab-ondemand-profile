@@ -143,3 +143,8 @@ EOF
 #sed '/^pun custom_env:/a \ \ OOD_DATAROOT: "/nfs/ood_data/$USER"'
 systemctl restart httpd24-httpd
 systemctl restart nfs
+
+echo "
+==========================================================================
+                                Done                                            
+=========================================================================="

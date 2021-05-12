@@ -83,3 +83,8 @@ systemctl restart httpd24-httpd
 sed -i '1s/^/HostBasedAuthentication yes\nEnableSSHKeysign yes\n/' /etc/ssh/ssh_config
 chgrp ssh_keys /etc/ssh/*_key
 chmod g+r /etc/ssh/*_key
+
+echo "
+==========================================================================
+                                Done                                            
+=========================================================================="

@@ -73,6 +73,10 @@ $keycloak create clients --server $server -r ondemand -s clientId=ondemand_clien
 # Set up hostBasedAuthentication (dependent on temporary fix)
 sed -i 's/#HostbasedAuthentication no/HostbasedAuthentication yes/g' /etc/ssh/sshd_config
 sed -i 's/#IgnoreRhosts yes/IgnoreRhosts no/g' /etc/ssh/sshd_config
-ssh-keyscan $ood_dns > /etc/ssh/ssh_known_hosts
 echo $ood_dns > /etc/ssh/shosts.equiv
 systemctl restart sshd
+
+echo "
+==========================================================================
+                                Done                                            
+=========================================================================="
