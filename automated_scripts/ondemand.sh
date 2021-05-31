@@ -21,9 +21,18 @@ sleep 10
 yum-config-manager --enable rhel-server-rhscl-7-rpms
 yum install -y ondemand ondemand-selinux rh-ruby25 rh-nodejs10 httpd24-mod_auth_openidc
 sleep 5
-systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap && \
-snap install core ; snap install core ; snap refresh core
-snap install --classic certbot ; snap install --classic certbot
+systemctl enable --now snapd.socket && ln -s /var/lib/snapd/snap /snap
+while [ ! -f /bin/snap ]
+do
+	snap install core
+	sleep 2
+done
+snap refresh core
+while [ ! -f /snap/bin/certbot ]
+do
+	snap install --classic certbot
+	sleep 2
+done
 ln -s /snap/bin/certbot /usr/bin/certbot
 # Configure shell application
 mkdir -p /etc/ood/config/apps etc/ood/config/apps/shell
