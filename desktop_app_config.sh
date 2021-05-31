@@ -133,7 +133,7 @@ EOF
 # Set up nfs file-sharing
 systemctl start nfs
 cat > /etc/exports <<EOF
-/home $worker_ip(rwx,sync,no_subtree_check,root_squash)
+/home $worker_ip(rw,sync,no_subtree_check,root_squash)
 EOF
 # Relocate ood_session_data output
 #cat > /etc/ood/config/apps/dashboard/env <<EOF
