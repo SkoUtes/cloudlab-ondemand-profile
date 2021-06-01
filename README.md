@@ -1,4 +1,4 @@
-# Installing Open OnDemand with Keycloak Authentication and LinuxHost Adapter
+# Open OnDemand with Keycloak Authentication and LinuxHost Adapter
 
 ### Setup and Configuration
 
