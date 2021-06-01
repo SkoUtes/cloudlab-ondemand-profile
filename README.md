@@ -47,3 +47,8 @@ If you can successfully log in then you know that Keycloak authentication is wor
 
 ### Configure LinuxHost Adapter
 
+On the OnDemand node run `/local/repository/dekstop_app_config.sh` and enter the information requested from node3. When that's done run `showmount -e` to check if nfs properly exported the user home directories.
+
+On node3 (the compute node) run `/local/repository/worker_config.sh` as the root user and input information requested from node1. Type `ls /home` to check if the user directories are mounted. Then create a test user with the same name and password as the one stored in the Keycloak database and the OnDemand server.
+
+To check if the LinuxHost Adapter is working, first try accessing the node3 from the OnDemand web GUI by selecting it under the `Clusters` menu. Then try starting up a remote desktop session on node3 by selecting it under the `Interactive Apps` menu. If everything is working properly then you should have a passwordless connection and a mate desktop in your browser window.
