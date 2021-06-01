@@ -11,7 +11,7 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 
 ### Keycloak Authentication
 
-Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. After logging in switch to the `ondemand` realm by selecting it from the drop-down menu on the top left. Then create a a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with `temporary password` set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
+Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. After logging in switch to the `ondemand` realm by selecting it from the drop-down menu on the top left. Next create a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with `temporary password` set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
 
 ```bash
 useradd "test-user"
@@ -42,9 +42,7 @@ OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_au
 ```
 
 Then save the file and restart apache using `systemctl restart httpd24-httpd`. Use the `hostname` command to get the URL for the OnDemand server and try accessing it through your browser. 
-
 It will warn you that the certificate is invalid, but this is not a concern since the server is actually encrypted through the CloudLab DNS name, so tell your browser to trust the certificate. 
-
 If you can successfully log in then you know that Keycloak authentication is working and your connection is secure.
 
 ### Configure LinuxHost Adapter
