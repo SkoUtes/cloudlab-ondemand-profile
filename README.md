@@ -1,4 +1,4 @@
-# Open OnDemand with Remote Desktop
+# Open OnDemand with Remote Desktop on CloudLab
 
 ## Setup and Configuration
 
