@@ -24,7 +24,7 @@ Now go to the `clients` tab and select the ondemand_client. Click on the `creden
 OIDCProviderMetadataURL https://keycloak_hostname/auth/realms/ondemand/.well-known/openid-configuration
 OIDCClientID        "ondemand_client"
 OIDCClientSecret    "client-secret"
-OIDCRedirectURI      https://hostname/oidc
+OIDCRedirectURI      https://ondemand_hostname/oidc
 OIDCCryptoPassphrase "openssl_random_hex"
 
 # Keep sessions alive for 8 hours
