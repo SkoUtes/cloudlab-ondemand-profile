@@ -135,15 +135,6 @@ systemctl start nfs
 cat > /etc/exports <<EOF
 /home $worker_ip(rw,sync,no_subtree_check,root_squash)
 EOF
-# Relocate ood_session_data output
-#cat > /etc/ood/config/apps/dashboard/env <<EOF
-#OOD_DATAROOT="/nfs/ood_data/\$USER"
-#EOF
-#cat > /etc/ood/config/apps/myjobs/env <<EOF
-#OOD_DATAROOT="/nfs/ood_data/\$USER"
-#EOF
-#sed -i 's/# pun custom_env:/pun custom_env:/g' /etc/ood/config/nginx_stage.yml
-#sed '/^pun custom_env:/a \ \ OOD_DATAROOT: "/nfs/ood_data/$USER"'
 systemctl restart httpd24-httpd
 systemctl restart nfs
 
