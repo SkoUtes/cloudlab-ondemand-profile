@@ -42,6 +42,7 @@ OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_au
 ```
 
 Then save the file and restart apache using `systemctl restart httpd24-httpd`. Use the `hostname` command to get the URL for the OnDemand server and try accessing it through your browser. 
+
 It will warn you that the certificate is invalid, but this is not a concern since the server is actually encrypted through the CloudLab DNS name, so tell your browser to trust the certificate. 
 If you can successfully log in then you know that Keycloak authentication is working and your connection is secure.
 
