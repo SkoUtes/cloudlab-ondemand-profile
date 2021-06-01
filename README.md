@@ -14,8 +14,8 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. After logging in switch to the `ondemand` realm by selecting it from the drop-down menu on the top left. Next create a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with `temporary password` set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
 
 ```bash
-useradd "test-user"
-passwd test-user
+useradd "test"
+passwd test
 ```
 
 Now go to the `clients` tab and select the ondemand_client. Click on the `credentials` menu to see the client-secret. In the terminal for the OnDemand host, edit the file at `/opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf` and input the client-secret like so:
