@@ -1,6 +1,6 @@
 # Open OnDemand with Keycloak Authentication and LinuxHost Adapter
 
-### Setup and Configuration
+## Setup and Configuration
 
 To start up an instance, log in to CloudLab and create a new experiment using the `slate-open-ondemand` profile.
 
@@ -9,7 +9,7 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 3. On node1 run the command `/local/repository/ondemand_config.sh` and on node2 run `/local/repository/keycloak_config.sh`. When prompted enter your email and to input a DNS name, type `hostname -A` in the terminal of the requested node.
 4.   When that's done, you should be able to see Open OnDemand and Keycloak at `https://ondemand.example.host` and `https://keycloak.example.host`. To get the hostname aliases, run the `hostname` command in the terminal.
 
-### Keycloak Authentication
+## Keycloak Authentication
 
 Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. After logging in switch to the `ondemand` realm by selecting it from the drop-down menu on the top left. Next create a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with `temporary password` set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
 
@@ -45,7 +45,7 @@ Then save the file and restart apache using `systemctl restart httpd24-httpd`. U
 
 If you can successfully log in then you know that Keycloak authentication is working and your connection is secure.
 
-### Configure LinuxHost Adapter
+## Configure LinuxHost Adapter
 
 On the OnDemand node run `/local/repository/dekstop_app_config.sh` and enter the information requested from node3. When that's done run `showmount -e` to check if nfs properly exported the user home directories.
 
