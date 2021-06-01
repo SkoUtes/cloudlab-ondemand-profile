@@ -1,4 +1,4 @@
-# Open OnDemand with Keycloak Authentication and LinuxHost Adapter
+# Open OnDemand with Remote Desktop
 
 ## Setup and Configuration
 
