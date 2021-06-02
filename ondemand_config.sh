@@ -2,7 +2,7 @@
 
 read -p "Email: " email
 read -p "Node2 (Keycloak) Cloudlab DNS Record: " kc_dns
-export ood_dns=$(hostname -A)
+export ood_dns=$(hostname -A | sed 's/ //g')
 export kc_host=$(hostname | sed 's/1/2/')
 export hostname=$(hostname)
 
@@ -80,7 +80,7 @@ chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
 systemctl restart httpd24-httpd
 
 # Set up hostBasedAuthentication (dependent on temporary fix)
-sed -i '1s/^/HostBasedAuthentication yes\nEnableSSHKeysign yes\n/' /etc/ssh/ssh_config
+sed -i 's/#  HostBasedAuthentication no/  HostBasedAuthentication yes\n  EnableSSHKeysign yes/g' /etc/ssh/ssh_config
 chgrp ssh_keys /etc/ssh/*_key
 chmod g+r /etc/ssh/*_key
 
