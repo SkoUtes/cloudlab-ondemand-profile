@@ -24,7 +24,9 @@ EOF
 yum install -y turbovnc
 yum install -y python-pip
 yum install -y git
-yum install -y python3
+cd /opt && wget https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tar.xz && tar xf Python-3.7.9.tar.xz && rm -f Python-3.7.9.tar.xz
+cd /opt/Python-3.7.9 && ./configure && make && make altinstall
+yum install -y libffi-devel
 pip install websockify
 cd /opt && git clone https://github.com/novnc/websockify.git
 cd /opt/websockify && sed "/install_requires/d" setup.py && python3 setup.py install
