@@ -71,6 +71,6 @@ $keycloak create realms -s realm=ondemand -s enabled=true
 $keycloak create clients --server $server -r ondemand -s clientId=ondemand_client -s enabled=true -s publicClient=false -s protocol=openid-connect -s directAccessGrantsEnabled=false -s serviceAccountsEnabled=true -s redirectUris=$redirect_uris -s authorizationServicesEnabled=true
 
 echo "
-========================================================================
-                                Done                                            
-========================================================================"
+============================================================
+                          Done                                      
+============================================================"
