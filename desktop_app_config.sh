@@ -51,7 +51,7 @@ v2:
         module purge
         #!/bin/bash
         export PATH="/opt/TurboVNC/bin:\$PATH"
-        export WEBSOCKIFY_CMD="/opt/websockify/run"
+        export WEBSOCKIFY_CMD="/usr/bin/websockify"
         export XDG_RUNTIME_DIR=$(mktemp -d)
         %s
 EOF
