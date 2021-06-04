@@ -80,7 +80,7 @@ chmod 640 /opt/rh/httpd24/root/etc/httpd/conf.d/auth_openidc.conf
 systemctl restart httpd24-httpd
 
 # Set up hostBasedAuthentication (dependent on temporary fix)
-sed -i 's/#  HostBasedAuthentication no/  HostBasedAuthentication yes\n  EnableSSHKeysign yes/g' /etc/ssh/ssh_config
+sed -i 's/#   HostbasedAuthentication no/   HostBasedAuthentication yes\n   EnableSSHKeysign yes/g' /etc/ssh/ssh_config
 chgrp ssh_keys /etc/ssh/*_key
 chmod g+r /etc/ssh/*_key
 
