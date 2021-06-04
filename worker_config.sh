@@ -18,6 +18,7 @@ mount $ood_dns:/home /home
 
 systemctl restart nfs
 systemctl start autofs
+systemctl start NetworkManager
 
 echo "
 ============================================================
