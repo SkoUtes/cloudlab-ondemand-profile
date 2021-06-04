@@ -42,14 +42,14 @@ v2:
   batch_connect:
     basic:
       script_wrapper: |
-        module purge
         #!/bin/bash
+        module purge
         export XDG_RUNTIME_DIR=$(mktemp -d)
         %s
     vnc:
       script_wrapper: |
-        module purge
         #!/bin/bash
+        module purge
         export PATH="/opt/TurboVNC/bin:\$PATH"
         export WEBSOCKIFY_CMD="/usr/bin/websockify"
         export XDG_RUNTIME_DIR=$(mktemp -d)

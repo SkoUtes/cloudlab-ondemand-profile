@@ -11,7 +11,7 @@ To start up an instance, log in to CloudLab and create a new experiment using th
 
 ## Keycloak Authentication
 
-Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. After logging in switch to the `ondemand` realm by selecting it from the drop-down menu on the top left. Next create a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with `temporary password` set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password using:
+Access the Keycloak GUI and log in with the user `admin` and the admin password stored in the `/root` directory. After logging in, switch to the `ondemand` realm by selecting it from the drop-down menu on the top left. Next create a test user by going to the `users` tab and give it a password by clicking on credentials, entering a password, and clicking save password with `temporary password` field set to OFF. Then, go to the OnDemand terminal and create a user with the same name and password like so:
 
 ```bash
 useradd "test"
@@ -41,14 +41,14 @@ OIDCPassClaimsAs environment
 OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 ```
 
-Then save the file and restart apache using `systemctl restart httpd24-httpd`. Use the `hostname` command to get the URL for the OnDemand server and try accessing it through your browser. It will warn you that the certificate is invalid, but this is not a concern since the server is actually encrypted through the DNS name, so tell your browser to trust the certificate. 
+Then save the file and restart apache using `systemctl restart httpd24-httpd`. Use the `hostname` command to get the URL for the OnDemand server and try accessing it through your browser. It will warn you that the certificate is invalid, this is not a concern since the server is actually encrypted through the DNS name, so tell your browser to trust the certificate. 
 
-If you can successfully log in then you know that Keycloak authentication is working and your connection is secure.
+If you can successfully log in then Keycloak authentication is working and your connection is secure.
 
 ## Configure LinuxHost Adapter
 
-On the OnDemand node run `/local/repository/dekstop_app_config.sh` and enter the information requested from node3. When that's done run `showmount -e` to check if nfs properly exported the user home directories.
+On the OnDemand node run `/local/repository/dekstop_app_config.sh` and enter the information requested from node3. Remember that `hostname -A` will return the DNS name. When that's done run `showmount -e` to check if nfs properly exported the user home directories.
 
-On node3 (the compute node) run `/local/repository/worker_config.sh` as the root user and input information requested from node1. Type `ls /home` to check if the user directories are mounted. Then create a test user with the same name and password as the one stored in the Keycloak database and the OnDemand server.
+On node3 (the worker node) first create a user with the same username and password that you used to log in to the OnDemand server. Then run `/local/repository/worker_config.sh` as the root user and input information requested from node1.
 
-To check if the LinuxHost Adapter is working, first try accessing the node3 from the OnDemand web GUI by selecting it under the `Clusters` menu. Then try starting up a remote desktop session on node3 by selecting it under the `Interactive Apps` menu. If everything is working properly then you should have a passwordless connection and a mate desktop in your browser window.
+Try logging into the worker node using the shell application under the `Clusters` tab in the OnDemand GUI. If you can log in without a password then you know that hostBasedAuthentication is working. Next try starting up a remote desktop session on the worker node by selecting `Remote Desktop` under the `Interactive Apps` menu. If everything is working properly then you should have a passwordless connection and a mate desktop in your browser window.
