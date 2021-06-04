@@ -12,7 +12,7 @@ mkdir /etc/ood/config/apps/myjobs
 cat > /etc/ood/config/apps/bc_desktop/submit/linuxhost_submit.yml.erb << EOF
 ---
 batch_connect:
-  templatge: "vnc"
+  template: "vnc"
   native:
     singularity_bindpath: /etc,/media,/mnt,/opt,/run,/srv,/usr,/var,/fs,/home
     singularity_container: /opt/centos7.sif
