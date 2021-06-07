@@ -12,16 +12,18 @@ yum install epel-release -y
 yum install -y singularity
 yum install -y tmux
 singularity pull /opt/centos7.sif docker://centos:7
-cat > /etc/yum.repos.d/TurboVNC.repo << EOF
-[TurboVNC]
-name=TurboVNC official RPMs
-baseurl=https://sourceforge.net/projects/turbovnc/files
-gpgcheck=1
-gpgkey=https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY
-       https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY-1024
-enabled=1
-EOF
-yum install -y turbovnc
+## Old VNC installation
+# cat > /etc/yum.repos.d/TurboVNC.repo << EOF
+# [TurboVNC]
+# name=TurboVNC official RPMs
+# baseurl=https://sourceforge.net/projects/turbovnc/files
+# gpgcheck=1
+# gpgkey=https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY
+       # https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY-1024
+# enabled=1
+# EOF
+# yum install -y turbovnc
+yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/turbovnc-2.2.3-1.el7.x86_64.rpm
 yum install -y python-pip
 yum install -y git
 yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/python-websockify-0.8.0-1.el7.noarch.rpm
