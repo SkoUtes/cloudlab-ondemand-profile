@@ -24,7 +24,7 @@ EOF
 yum install -y turbovnc
 yum install -y python-pip
 yum install -y git
-yum install -y https://cbs.centos.org/kojifiles/packages/python-websockify/0.8.0/13.el7/noarch/python2-websockify-0.8.0-13.el7.noarch.rpm
+yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/python-websockify-0.8.0-1.el7.noarch.rpm
 yum groupinstall -y "Server with GUI"
 yum groupinstall -y "MATE Desktop"
 
