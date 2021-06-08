@@ -23,6 +23,7 @@ singularity pull /opt/centos7.sif docker://centos:7
 # enabled=1
 # EOF
 # yum install -y turbovnc
+hostnamectl set-hostname $(hostname -A)
 yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/turbovnc-2.2.3-1.el7.x86_64.rpm
 yum install -y python-pip
 yum install -y git
