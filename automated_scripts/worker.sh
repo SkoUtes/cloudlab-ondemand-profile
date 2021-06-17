@@ -24,9 +24,10 @@ singularity pull /opt/centos7.sif docker://centos:7
 # EOF
 # yum install -y turbovnc
 hostnamectl set-hostname $(hostname -A)
-yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/turbovnc-2.2.3-1.el7.x86_64.rpm
 yum install -y python-pip
 yum install -y git
+yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/turbovnc-2.2.3-1.el7.x86_64.rpm
+yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/ondemand-compute-1.8-1.el7.noarch.rpm
 yum install -y https://yum.osc.edu/ondemand/1.8/compute/el7Server/x86_64/python-websockify-0.8.0-1.el7.noarch.rpm
 yum groupinstall -y "Server with GUI"
 yum groupinstall -y "MATE Desktop"
