@@ -38,7 +38,7 @@ EOF
 
 cat > /etc/httpd/conf.d/keycloak.conf <<EOF
 <VirtualHost *:80>
-  ServerName node2.ondemand.slate-pg0.wisc.cloudlab.us
+  ServerName $hostname
 
   ErrorLog  "/var/log/httpd/error_log"
   CustomLog "/var/log/httpd/access_log" combined
